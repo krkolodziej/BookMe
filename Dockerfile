@@ -40,13 +40,15 @@ RUN mkdir -p var/cache var/log && \
     chown -R www-data:www-data var && \
     chmod -R 775 var
 
-# Clear cache and run migrations (before removing dev dependencies)
-RUN php bin/console cache:clear --env=prod --no-debug && \
-    php bin/console cache:warmup --env=prod && \
-    php bin/console doctrine:migrations:migrate --no-interaction --env=prod
+# Run migrations (before removing dev dependencies)
+RUN php bin/console doctrine:migrations:migrate --no-interaction --env=prod
 
 # Now remove dev dependencies
 RUN composer install --no-dev --optimize-autoloader --no-interaction
+
+# Clear cache after removing dev dependencies
+RUN php bin/console cache:clear --env=prod --no-debug && \
+    php bin/console cache:warmup --env=prod
 
 # Configure Apache
 RUN a2enmod rewrite
