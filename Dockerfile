@@ -29,8 +29,8 @@ WORKDIR /var/www/html
 # Copy application files
 COPY . .
 
-# Install PHP dependencies
-RUN composer install --no-dev --optimize-autoloader --no-interaction
+# Install PHP dependencies (with dev first for cache:clear)
+RUN composer install --optimize-autoloader --no-interaction
 
 # Install Node.js dependencies and build assets
 RUN npm install && npm run build
@@ -40,10 +40,14 @@ RUN mkdir -p var/cache var/log && \
     chown -R www-data:www-data var && \
     chmod -R 775 var
 
-# Clear cache and setup database
+# Clear cache and setup database (before removing dev dependencies)
 RUN php bin/console cache:clear --env=prod --no-debug && \
+    php bin/console cache:warmup --env=prod && \
     php bin/console doctrine:database:create --if-not-exists --env=prod && \
     php bin/console doctrine:migrations:migrate --no-interaction --env=prod
+
+# Now remove dev dependencies
+RUN composer install --no-dev --optimize-autoloader --no-interaction
 
 # Configure Apache
 RUN a2enmod rewrite
