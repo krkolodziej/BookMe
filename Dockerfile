@@ -30,7 +30,7 @@ WORKDIR /var/www/html
 COPY . .
 
 # Install PHP dependencies (with dev first for cache:clear)
-RUN composer install --optimize-autoloader --no-interaction
+RUN COMPOSER_ALLOW_SUPERUSER=1 composer install --optimize-autoloader --no-interaction
 
 # Install Node.js dependencies and build assets
 RUN npm install && npm run build
@@ -44,7 +44,7 @@ RUN mkdir -p var/cache var/log && \
 RUN php bin/console doctrine:migrations:migrate --no-interaction --env=prod
 
 # Now remove dev dependencies
-RUN composer install --no-dev --optimize-autoloader --no-interaction
+RUN COMPOSER_ALLOW_SUPERUSER=1 composer install --no-dev --optimize-autoloader --no-interaction
 
 # Clear cache after removing dev dependencies
 RUN php bin/console cache:clear --env=prod --no-debug && \
