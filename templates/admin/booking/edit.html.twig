@@ -1,0 +1,157 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edytuj Wizytę - {{ service.name }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('styles/admin/booking/styles.css') }}">
+    <link rel="stylesheet" href="{{ asset('styles/admin/booking/calendar.css') }}">
+{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="alert alert-{{ label }} alert-dismissible fade show">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endfor %}
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2><i class="fas fa-edit me-2"></i>Edytuj Wizytę</h2>
+            <div>
+                <a href="{{ path('admin_service_bookings', {'encodedName': service.encodedName}) }}" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-2"></i>Powrót do Listy Wizyt
+                </a>
+            </div>
+        </div>
+
+        <div class="booking-form-container">
+            <div class="form-header">
+                <h4 class="mb-0">Edycja Wizyty - {{ service.name }}</h4>
+            </div>
+
+            <div class="current-booking-info">
+                <div class="row">
+                    <div class="col-md-6">
+                        <p class="mb-1"><strong>Klient:</strong> {{ booking.user.firstName }} {{ booking.user.lastName }}</p>
+                        <p class="mb-1"><strong>Usługa:</strong> {{ booking.offer.name }}</p>
+                        <p class="mb-0"><strong>Pracownik:</strong>
+                            {% if booking.employee %}
+                                {{ booking.employee.user.firstName }} {{ booking.employee.user.lastName }}
+                            {% else %}
+                                <span class="text-muted">Nie przypisano</span>
+                            {% endif %}
+                        </p>
+                    </div>
+                    <div class="col-md-6">
+                        <p class="mb-1"><strong>Obecna data:</strong> {{ booking.startTime|date('d.m.Y') }}</p>
+                        <p class="mb-1"><strong>Obecna godzina:</strong> {{ booking.startTime|date('H:i') }}</p>
+                        <p class="mb-0"><strong>Czas trwania:</strong> {{ booking.offer.duration }} minut</p>
+                    </div>
+                </div>
+            </div>
+
+            <ul class="nav nav-tabs" id="bookingEditTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="details-tab" data-bs-toggle="tab" data-bs-target="#details" type="button" role="tab" aria-controls="details" aria-selected="true">
+                        <i class="fas fa-info-circle me-2"></i>Dane podstawowe
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="time-tab" data-bs-toggle="tab" data-bs-target="#time" type="button" role="tab" aria-controls="time" aria-selected="false">
+                        <i class="fas fa-clock me-2"></i>Termin
+                    </button>
+                </li>
+            </ul>
+
+            {{ form_start(form) }}
+            <div class="tab-content" id="bookingEditTabsContent">
+                <div class="tab-pane fade show active" id="details" role="tabpanel" aria-labelledby="details-tab">
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            {{ form_label(form.user) }}
+                            {{ form_widget(form.user) }}
+                            {{ form_errors(form.user) }}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form_label(form.employee) }}
+                            {{ form_widget(form.employee) }}
+                            {{ form_errors(form.employee) }}
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        {{ form_label(form.offer) }}
+                        {{ form_widget(form.offer) }}
+                        {{ form_errors(form.offer) }}
+                    </div>
+
+                    <div class="d-flex justify-content-end mt-4">
+                        <button type="button" class="btn btn-dark" id="goToTimeTab">
+                            Przejdź do terminu <i class="fas fa-arrow-right ms-2"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="time" role="tabpanel" aria-labelledby="time-tab">
+                    <div class="mb-3">
+                        {{ form_label(form.bookingDate) }}
+                        {{ form_widget(form.bookingDate) }}
+                        {{ form_errors(form.bookingDate) }}
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Dostępne terminy</label>
+                        <div class="loading-spinner">
+                            <div class="spinner-border text-dark" role="status">
+                                <span class="visually-hidden">Ładowanie...</span>
+                            </div>
+                            <p class="mt-2">Ładowanie dostępnych terminów...</p>
+                        </div>
+                        <div class="slots-container">
+                            <div class="no-slots-message">
+                                <p>Wybierz datę, aby zobaczyć dostępne terminy.</p>
+                            </div>
+                            <div class="time-slots"></div>
+                        </div>
+                    </div>
+
+                    {{ form_widget(form.startTime) }}
+
+                    <div class="d-flex justify-content-between mt-4">
+                        <button type="button" class="btn btn-outline-secondary" id="backToDetailsTab">
+                            <i class="fas fa-arrow-left me-2"></i>Wróć do danych
+                        </button>
+                        <button type="submit" class="btn btn-dark">
+                            <i class="fas fa-save me-2"></i>Zapisz zmiany
+                        </button>
+                    </div>
+                </div>
+            </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        // Initialize variables needed in external JS file
+        const formVars = {
+            userId: '{{ form.user.vars.id }}',
+            offerId: '{{ form.offer.vars.id }}',
+            employeeId: '{{ form.employee.vars.id }}',
+            bookingDateId: '{{ form.bookingDate.vars.id }}',
+            startTimeId: '{{ form.startTime.vars.id }}'
+        };
+        const bookingConfig = {
+            slotsUrl: '{{ path('admin_service_bookings_slots', {'encodedName': service.encodedName}) }}',
+            bookingId: '{{ booking.id }}',
+            currentDateTime: '{{ booking.startTime|date('Y-m-d H:i:s') }}'
+        };
+    </script>
+    <script src="{{ asset('js/admin/booking/edit.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,95 @@
+
+.available-dates {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+    margin-bottom: 15px !important;
+}
+
+.date-card {
+    flex: 1 !important;
+    min-width: 70px !important;
+    border: 1px solid #ced4da !important;
+    border-radius: 6px !important;
+    padding: 8px 5px !important;
+    text-align: center !important;
+    cursor: pointer !important;
+    transition: all 0.2s !important;
+    background-color: white !important;
+}
+
+.date-card:hover:not(.disabled) {
+    background-color: #e9ecef !important;
+    border-color: #adb5bd !important;
+}
+
+.date-card.active {
+    background-color: #212529 !important;
+    color: white !important;
+    border-color: #212529 !important;
+}
+
+.date-card .day-name {
+    font-size: 0.8rem !important;
+    color: #6c757d !important;
+    margin-bottom: 2px !important;
+}
+
+.date-card .day-number {
+    font-size: 1.2rem !important;
+    font-weight: bold !important;
+    margin-bottom: 2px !important;
+}
+
+.date-card .month-name {
+    font-size: 0.8rem !important;
+    color: #6c757d !important;
+}
+
+
+.date-card.disabled {
+    opacity: 0.6 !important;
+    background-color: #dee2e6 !important;
+    border-color: #ced4da !important;
+    cursor: not-allowed !important;
+    color: #adb5bd !important;
+    transition: none !important;
+    pointer-events: none !important;
+    box-shadow: none !important;
+}
+
+.date-card.disabled .day-name,
+.date-card.disabled .month-name,
+.date-card.disabled .day-number {
+    color: #adb5bd !important;
+}
+
+
+.time-slot.disabled {
+    opacity: 0.6 !important;
+    background-color: #dee2e6 !important;
+    border-color: #ced4da !important;
+    cursor: not-allowed !important;
+    color: #adb5bd !important;
+    transition: none !important;
+    pointer-events: none !important;
+    box-shadow: none !important;
+    transform: none !important;
+    animation: none !important;
+}
+
+.time-slot.disabled:hover {
+    background-color: #dee2e6 !important;
+    border-color: #ced4da !important;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+.time-slot.disabled:active {
+    transform: none !important;
+    background-color: #dee2e6 !important;
+}
+
+.date-navigation {
+    margin-bottom: 15px !important;
+}

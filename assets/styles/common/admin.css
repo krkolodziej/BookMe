@@ -1,0 +1,21 @@
+.admin-card {
+    transition: all 0.3s ease;
+    min-height: 230px;
+}
+.admin-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2) !important;
+}
+.admin-card-body {
+    padding: 2rem 1.5rem;
+}
+.admin-icon {
+    margin-bottom: 1.5rem;
+}
+.admin-card-title {
+    font-size: 1.25rem;
+    margin-bottom: 1.5rem;
+}
+.btn {
+    padding: 0.5rem 1.5rem;
+}

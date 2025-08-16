@@ -1,0 +1,115 @@
+/* Booking form styles */
+.fc-event {
+    cursor: pointer;
+}
+
+.calendar-container {
+    margin-bottom: 1.5rem;
+}
+
+.fc .fc-toolbar-title {
+    font-size: 1.1em;
+}
+
+.booking-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    min-height: 600px;
+}
+
+.buttons-container {
+    margin-top: 1rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid #eee;
+}
+
+.calendar-section {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+    background-color: #f9f9f9;
+}
+
+.loading-indicator {
+    display: none;
+    text-align: center;
+    padding: 5px;
+    margin-bottom: 5px;
+}
+
+.loading-indicator.active {
+    display: block;
+}
+
+.selected-slot {
+    background-color: #007bff !important;
+    color: white !important;
+}
+
+.available-dates {
+    margin-top: 15px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.date-card {
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 10px;
+    width: 180px;
+    cursor: pointer;
+    background-color: #f8f9fa;
+    transition: all 0.2s;
+}
+
+.date-card:hover {
+    background-color: #e9ecef;
+    transform: translateY(-2px);
+}
+
+.date-card.selected {
+    background-color: #cfe2ff;
+    border-color: #0d6efd;
+}
+
+.date-card h6 {
+    margin: 0 0 5px 0;
+    font-weight: bold;
+}
+
+.time-slots {
+    margin-top: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+}
+
+.time-slot {
+    padding: 3px 8px;
+    border-radius: 12px;
+    background-color: #28a745;
+    color: white;
+    font-size: 0.85rem;
+    cursor: pointer;
+}
+
+.time-slot:hover {
+    background-color: #218838;
+}
+
+.time-slot.selected {
+    background-color: #007bff;
+}
+
+.time-slot.current {
+    background-color: #fd7e14;
+}
+
+.empty-message {
+    padding: 15px;
+    text-align: center;
+    color: #6c757d;
+}

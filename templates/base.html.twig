@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}BookMe{% endblock %}</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
+
+    {% block stylesheets %}
+        {{ encore_entry_link_tags('app') }}
+        <!-- Bootstrap CSS -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+        <!-- Swiper CSS -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css">
+        <!-- Syncfusion CSS -->
+        <link rel="stylesheet" href="https://cdn.syncfusion.com/ej2/material.css">
+        <!-- Flatpickr CSS -->
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/themes/material_blue.css">
+        <!-- Google Fonts -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Lakki+Reddy&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    {% endblock %}
+
+    {% block javascripts %}
+        {{ encore_entry_script_tags('app') }}
+        <!-- Syncfusion JS -->
+        <script src="https://cdn.syncfusion.com/ej2/dist/ej2.min.js"></script>
+        <!-- Axios -->
+        <script src="https://cdn.jsdelivr.net/npm/axios@1.6.7/dist/axios.min.js"></script>
+        <!-- jQuery -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    {% endblock %}
+</head>
+<body class="d-flex flex-column min-vh-100">
+<header>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&display=swap" rel="stylesheet">
+    <nav class="navbar navbar-expand-lg bg-dark py-2 shadow">
+        <div class="container">
+            <a class="navbar-brand text-white d-flex align-items-center me-4" href="/">
+                <span class="logo-text me-2">BookMe</span>
+            </a>
+
+            <button class="navbar-toggler bg-light bg-opacity-10" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+                <ul class="navbar-nav me-4">
+                    <li class="nav-item">
+                        <a class="nav-link text-white position-relative px-3 py-2 d-inline-block" href="{% if is_granted('ROLE_EMPLOYEE') %}{{ path('employee_bookings') }}{% else %}{{ path('booking_index') }}{% endif %}">
+                            <i class="fas fa-calendar-check me-1"></i> Moje Wizyty
+                            <span class="position-absolute bottom-0 start-50 translate-middle-x" style="height: 2px; width: 50%; background-color: white; opacity: 0; transition: opacity 0.3s;"></span>
+                        </a>
+                    </li>
+                </ul>
+
+                <form class="d-flex flex-grow-1 gap-2" role="search" action="{{ path('search_results') }}" method="get">
+                    <div class="position-relative flex-grow-1">
+                        <div class="input-group">
+                            <span class="input-group-text bg-white border-end-0">
+                                <i class="fas fa-search text-muted"></i>
+                            </span>
+                            <input id="serviceSearch" class="form-control border-start-0 ps-0" type="search" name="searchTerm"
+                                   placeholder="Znajdź usługę" aria-label="Search" autocomplete="off">
+                        </div>
+                        <div id="serviceSuggestions" class="position-absolute w-100 shadow-sm" style="z-index: 1500;"></div>
+                    </div>
+
+                    <div class="position-relative flex-grow-1">
+                        <div class="input-group">
+                            <span class="input-group-text bg-white border-end-0">
+                                <i class="fas fa-map-marker-alt text-muted"></i>
+                            </span>
+                            <input id="citySearch" class="form-control border-start-0 ps-0" type="search" name="city"
+                                   placeholder="Warszawa" aria-label="Search" autocomplete="off">
+                        </div>
+                        <div id="citySuggestions" class="position-absolute w-100 shadow-sm" style="z-index: 1500;"></div>
+                    </div>
+
+                    <button class="btn btn-outline-light px-3" type="submit">
+                        <i class="fas fa-search me-1"></i> Szukaj
+                    </button>
+                </form>
+
+                <div class="d-flex align-items-center ms-3 navbar-nav">
+                    {% if is_granted('ROLE_EMPLOYEE') %}
+                        {% set current_route = app.request.attributes.get('_route') %}
+                        {% set is_notifications_page = current_route == 'notifications_index' %}
+                        
+                        {% if is_notifications_page %}
+                            <!-- Uproszczona ikona powiadomień na stronie powiadomień (bez dropdown) -->
+                            <div class="nav-item">
+                                <span class="nav-link text-white position-relative p-2 mx-1" title="Powiadomienia">
+                                    <i class="fa-solid fa-bell fa-lg"></i>
+                                    {% if unread_notifications_count > 0 %}
+                                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                            {{ unread_notifications_count }}
+                                        </span>
+                                    {% endif %}
+                                </span>
+                            </div>
+                        {% else %}
+                            <!-- Normalny dropdown na innych stronach -->
+                            <div class="nav-item dropdown">
+                                <a href="#" class="nav-link text-white position-relative p-2 mx-1 dropdown-toggle" 
+                                   id="notificationDropdown" role="button" data-bs-toggle="dropdown" 
+                                   aria-expanded="false" title="Powiadomienia">
+                                    <i class="fa-solid fa-bell fa-lg"></i>
+                                    {% if unread_notifications_count > 0 %}
+                                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                                            {{ unread_notifications_count }}
+                                        </span>
+                                    {% endif %}
+                                </a>
+                                <div class="dropdown-menu dropdown-menu-end shadow-lg border-0" 
+                                     aria-labelledby="notificationDropdown" 
+                                     style="width: 380px; max-width: 90vw;" 
+                                     id="notificationDropdownContent">
+                                    <!-- Zawartość będzie ładowana dynamicznie -->
+                                    <div class="text-center py-3">
+                                        <div class="spinner-border spinner-border-sm text-primary" role="status">
+                                            <span class="visually-hidden">Ładowanie...</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endif %}
+
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <a href="{{ path('admin_index') }}" class="nav-link text-white p-2 mx-1" title="Panel Administratora">
+                            <i class="fa-solid fa-cogs fa-lg"></i>
+                        </a>
+                    {% endif %}
+
+                    {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                        {% set user = app.user %}
+                        <div class="nav-item dropdown ms-2">
+                            <a class="nav-link text-white dropdown-toggle d-flex align-items-center" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <div class="rounded-circle overflow-hidden border border-2 border-light me-2" style="width: 40px; height: 40px;">
+                                    <img src="{{ user.avatarUrl ?? 'https://sbcf.fr/wp-content/uploads/2018/03/sbcf-default-avatar.png' }}"
+                                         alt="Avatar"
+                                         class="w-100 h-100"
+                                         style="object-fit: cover;" />
+                                </div>
+                                <span class="me-1">{{ user.firstName }}</span>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                                <li><a class="dropdown-item" href="{{ path('app_user_edit') }}"><i class="fas fa-user-edit me-2"></i>Edytuj profil</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item text-danger" href="{{ path('app_logout') }}"><i class="fas fa-sign-out-alt me-2"></i>Wyloguj się</a></li>
+                            </ul>
+                        </div>
+                    {% else %}
+                        <div class="auth-buttons d-flex align-items-center">
+                            <a class="btn btn-outline-light btn-sm rounded-pill px-3 py-1 me-3 auth-btn register-btn" href="{{ path('app_register') }}">
+                                <i class="fas fa-user-plus me-1"></i> Rejestracja
+                            </a>
+                            <a class="btn btn-light btn-sm rounded-pill px-3 py-1 auth-btn login-btn" href="{{ path('app_login') }}">
+                                <i class="fas fa-sign-in-alt me-1"></i> Zaloguj się
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<link rel="stylesheet" href="{{ asset('styles/navbar.css') }}">
+
+{% block top_categories %}
+    <div class="categories-list py-2 border-bottom bg-white">
+        <div class="px-3">
+            <ul class="list-unstyled d-flex flex-wrap mb-0 gap-2 justify-content-center">
+                {% for category in get_service_categories() %}
+                    <li class="flex-shrink-0 text-center" style="width: 110px;">
+                        <a href="{{ path('category_details', {'encodedName': category.encodedName}) }}"
+                           class="text-dark text-decoration-none d-flex align-items-center justify-content-center h-100 small
+                  {% if app.request.get('_route') == 'category_details' and app.request.get('encodedName') == category.encodedName %}
+                  border-bottom border-dark
+                  {% endif %}">
+                            {{ category.name }}
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+{% endblock %}
+
+<script src="{{ asset('js/navbar.js') }}"></script>
+
+<main class="flex-grow-1 py-4">
+    <div class="container">
+        {% block body %}{% endblock %}
+    </div>
+</main>
+
+{% block categories %}
+    <div class="container my-5">
+        <div class="categories-container">
+            <div class="categories-container-wrapper">
+                <div class="swiper2">
+                    <div class="swiper-wrapper">
+                        {% for category in get_service_categories() %}
+                            <div class="swiper-slide">
+                                <a href="{{ path('category_details', {'encodedName': category.encodedName}) }}"
+                                   class="text-decoration-none text-dark">
+                                    <div class="d-flex flex-column align-items-center">
+                                        <div class="rounded-circle overflow-hidden mb-2" style="width: 100px; height: 100px;">
+                                            <img src="{{ category.imageUrl }}"
+                                                 class="img-fluid w-100 h-100"
+                                                 style="object-fit: cover;"
+                                                 alt="{{ category.name }}">
+                                        </div>
+                                        <h6 class="text-center mb-0">{{ category.name }}</h6>
+                                    </div>
+                                </a>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="swiper-button-prev2 text-dark">
+                    <i class="fa-solid fa-arrow-left"></i>
+                </div>
+                <div class="swiper-button-next2 text-dark">
+                    <i class="fa-solid fa-arrow-right"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+<footer class="bg-light py-3 mt-auto border-top">
+    <div class="container text-center text-muted">
+        &copy; {{ "now"|date("Y") }} - BookMe
+    </div>
+</footer>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Swiper JS -->
+<script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+<!-- jQuery Validation -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/4.0.0/jquery.validate.unobtrusive.min.js"></script>
+<!-- Flatpickr -->
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/pl.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+{% block additional_javascripts %}
+    <script src="{{ asset('js/notification/notifications.js') }}"></script>
+{% endblock %}
+
+{{ encore_entry_script_tags('swiper') }}
+{{ encore_entry_script_tags('search') }}
+</body>
+</html>

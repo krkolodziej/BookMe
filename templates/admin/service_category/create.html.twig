@@ -1,0 +1,68 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Dodaj Nową Kategorię{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('styles/admin/service_category/styles.css') }}">
+{% endblock %}
+
+{% block body %}
+    <div class="container mt-5 mb-5">
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="alert alert-{{ label }} alert-dismissible fade show">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endfor %}
+
+        <h2 class="mb-4 text-center">Dodaj Nową Kategorię</h2>
+
+        <div class="admin-section">
+            <div class="admin-section-header">
+                <h3 class="m-0"><i class="fas fa-plus-circle me-2"></i>Nowa Kategoria</h3>
+            </div>
+            <div class="admin-section-body">
+                {{ form_start(form) }}
+                <div class="mb-3">
+                    {{ form_label(form.name) }}
+                    {{ form_widget(form.name) }}
+                    {{ form_errors(form.name) }}
+                </div>
+                <div class="mb-3">
+                    {{ form_label(form.imageUrl) }}
+                    {{ form_widget(form.imageUrl) }}
+                    {{ form_errors(form.imageUrl) }}
+                </div>
+
+                <div id="image-preview-container" class="text-center mt-4 d-none">
+                    <h5 class="mb-3">Podgląd obrazu:</h5>
+                    <img src="" alt="Podgląd obrazu" id="image-preview" class="preview-image">
+                </div>
+
+                <div class="d-flex justify-content-between mt-4">
+                    <a href="{{ path('admin_service_category_index') }}" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-2"></i>Powrót
+                    </a>
+                    <button type="submit" class="btn btn-dark">
+                        <i class="fas fa-save me-2"></i>Zapisz kategorię
+                    </button>
+                </div>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        const imageConfig = {
+            inputId: '{{ form.imageUrl.vars.id }}',
+            previewContainerId: 'image-preview-container'
+        };
+    </script>
+    <script src="{{ asset('js/admin/service_category/create.js') }}"></script>
+{% endblock %}

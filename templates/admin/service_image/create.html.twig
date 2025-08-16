@@ -1,0 +1,91 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Dodaj Nowe Zdjęcie - {{ service.name }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('styles/admin/service_image/styles.css') }}">
+{% endblock %}
+
+{% block body %}
+    <div class="container mt-5 mb-5">
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="alert alert-{{ label }} alert-dismissible fade show">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endfor %}
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Dodaj Nowe Zdjęcie - {{ service.name }}</h2>
+            <a href="{{ path('admin_service_image_index', {'encodedName': encodedName}) }}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-2"></i>Powrót do Galerii
+            </a>
+        </div>
+
+        <div class="admin-section">
+            <div class="admin-section-header">
+                <h3 class="m-0"><i class="fas fa-plus me-2"></i>Nowe Zdjęcie</h3>
+            </div>
+            <div class="admin-section-body">
+                {{ form_start(form) }}
+                <div class="mb-4">
+                    {{ form_label(form.url) }}
+                    {{ form_widget(form.url) }}
+                    {{ form_errors(form.url) }}
+                    <small class="form-text text-muted">Wprowadź pełny URL do zdjęcia, np. https://example.com/image.jpg</small>
+                </div>
+
+                <div id="image-preview-container" class="image-preview-container">
+                    <h5 class="mb-3">Podgląd zdjęcia:</h5>
+                    <img src="" alt="Podgląd zdjęcia" id="image-preview" class="image-preview">
+                </div>
+
+                <div id="image-preview-placeholder" class="image-preview-placeholder">
+                    <div class="text-center">
+                        <i class="fas fa-image mb-2"></i>
+                        <p class="mb-0">Wprowadź URL, aby zobaczyć podgląd zdjęcia</p>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between mt-4">
+                    <a href="{{ path('admin_service_image_index', {'encodedName': encodedName}) }}" class="btn btn-outline-secondary">
+                        <i class="fas fa-times me-2"></i>Anuluj
+                    </a>
+                    <button type="submit" class="btn btn-dark">
+                        <i class="fas fa-save me-2"></i>Zapisz zdjęcie
+                    </button>
+                </div>
+                {{ form_end(form) }}
+
+                <div class="image-tips">
+                    <div class="tip-title">
+                        <i class="fas fa-lightbulb"></i>
+                        Wskazówki dotyczące zdjęć
+                    </div>
+                    <ul class="tip-list">
+                        <li>Używaj zdjęć o wysokiej jakości i rozdzielczości.</li>
+                        <li>Optymalne proporcje to 4:3 lub 16:9.</li>
+                        <li>Maksymalny zalecany rozmiar pliku to 2MB.</li>
+                        <li>Upewnij się, że masz prawa do użycia danego zdjęcia.</li>
+                        <li>Unikaj zdjęć zawierających znaki wodne innych serwisów.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        const imageConfig = {
+            inputId: '{{ form.url.vars.id }}',
+            previewContainerId: 'image-preview-container',
+            placeholderId: 'image-preview-placeholder'
+        };
+    </script>
+    <script src="{{ asset('js/admin/service_image/create.js') }}"></script>
+{% endblock %}

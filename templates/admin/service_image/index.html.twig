@@ -1,0 +1,124 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Zarządzanie Zdjęciami - {{ service.name }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('styles/admin/service_image/styles.css') }}">
+{% endblock %}
+
+{% block body %}
+    <div class="container mt-5 mb-5">
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="alert alert-{{ label }} alert-dismissible fade show">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endfor %}
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Zarządzanie Zdjęciami - {{ service.name }}</h2>
+            <a href="{{ path('admin_service_edit', {'encodedName': encodedName}) }}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-2"></i>Powrót do Serwisu
+            </a>
+        </div>
+
+        <div class="admin-section">
+            <div class="admin-section-header d-flex justify-content-between align-items-center">
+                <h3 class="m-0"><i class="fas fa-images me-2"></i>Galeria Zdjęć</h3>
+                <a href="{{ path('admin_service_image_create', {'encodedName': encodedName}) }}" class="btn btn-light btn-sm">
+                    <i class="fas fa-plus me-1"></i>Dodaj Zdjęcie
+                </a>
+            </div>
+
+            <div class="admin-section-body">
+                {% if images|length > 0 %}
+                    <div class="image-gallery">
+                        {% for image in images %}
+                            <div class="image-card" data-image-id="{{ image.id }}">
+                                <div class="image-container">
+                                    <img src="{{ image.url }}" alt="Zdjęcie serwisu" class="service-image gallery-image">
+                                    <div class="image-overlay">
+                                        <a href="{{ path('admin_service_image_edit', {'encodedName': encodedName, 'id': image.id}) }}" class="image-action edit" title="Edytuj">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <a href="#" class="image-action view" title="Powiększ" data-image-url="{{ image.url }}">
+                                            <i class="fas fa-search-plus"></i>
+                                        </a>
+                                        <a href="#" class="image-action delete" title="Usuń" data-bs-toggle="modal" data-bs-target="#deleteModal{{ image.id }}">
+                                            <i class="fas fa-trash"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Delete Confirmation Modal -->
+                            <div class="modal fade" id="deleteModal{{ image.id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ image.id }}" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="deleteModalLabel{{ image.id }}">Potwierdź usunięcie</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <p>Czy na pewno chcesz usunąć to zdjęcie?</p>
+                                            <div class="text-center">
+                                                <img src="{{ image.url }}" alt="Zdjęcie do usunięcia" style="max-width: 100%; max-height: 200px; object-fit: contain;">
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Anuluj</button>
+                                            <form action="{{ path('admin_service_image_delete', {'encodedName': encodedName, 'id': image.id}) }}" method="post">
+                                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ image.id) }}">
+                                                <button type="submit" class="btn btn-danger">Usuń</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+
+                        <!-- Add New Image Card -->
+                        <a href="{{ path('admin_service_image_create', {'encodedName': encodedName}) }}" class="add-image-card">
+                            <div class="add-icon"><i class="fas fa-plus-circle"></i></div>
+                            <p>Dodaj nowe zdjęcie</p>
+                        </a>
+                    </div>
+                {% else %}
+                    <div class="no-images">
+                        <p><i class="fas fa-info-circle me-2"></i>Brak zdjęć dla tego serwisu</p>
+                        <a href="{{ path('admin_service_image_create', {'encodedName': encodedName}) }}" class="btn btn-dark mt-3">
+                            <i class="fas fa-plus me-2"></i>Dodaj Pierwsze Zdjęcie
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Fullscreen Image Overlay -->
+    <div class="fullscreen-overlay" id="imageFullscreen">
+        <div class="close-fullscreen" id="closeFullscreen"><i class="fas fa-times"></i></div>
+        <div class="modal-navigation">
+            <div class="modal-nav-btn" id="prevImage"><i class="fas fa-chevron-left"></i></div>
+            <div class="modal-nav-btn" id="nextImage"><i class="fas fa-chevron-right"></i></div>
+        </div>
+        <img src="" alt="Pełny widok zdjęcia" class="fullscreen-image" id="fullscreenImage">
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        const imageGalleryConfig = {
+            overlayId: 'imageFullscreen',
+            fullscreenImageId: 'fullscreenImage',
+            closeButtonId: 'closeFullscreen',
+            prevButtonId: 'prevImage',
+            nextButtonId: 'nextImage'
+        };
+    </script>
+    <script src="{{ asset('js/admin/service_image/index.js') }}"></script>
+{% endblock %}

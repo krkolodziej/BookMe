@@ -1,0 +1,314 @@
+.booking-form-container {
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    padding: 20px;
+    margin-bottom: 30px;
+}
+
+.form-header {
+    background-color: #212529;
+    color: white;
+    padding: 15px 20px;
+    margin: -20px -20px 20px;
+    border-radius: 10px 10px 0 0;
+}
+
+.time-slots {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.time-slot {
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+    padding: 8px 15px;
+    cursor: pointer;
+    transition: all 0.2s;
+    background-color: white;
+    color: #212529;
+    font-weight: 500;
+}
+
+.time-slot:hover {
+    background-color: #e9ecef;
+}
+
+.time-slot.selected {
+    background-color: #212529;
+    color: white;
+    border-color: #212529;
+}
+
+.time-slot.current {
+    border: 2px solid #20c997;
+    position: relative;
+}
+
+.time-slot.current::after {
+    content: "Obecny";
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background-color: #20c997;
+    color: white;
+    padding: 2px 6px;
+    border-radius: 10px;
+    font-size: 0.7rem;
+    font-weight: bold;
+}
+
+.slots-container {
+    max-height: 300px;
+    overflow-y: auto;
+    padding: 15px;
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+    background-color: white;
+}
+
+.date-picker {
+    cursor: pointer;
+}
+
+.btn-dark {
+    background-color: #212529;
+    border: none;
+}
+
+.btn-dark:hover {
+    background-color: #000;
+}
+
+.no-slots-message {
+    padding: 20px;
+    text-align: center;
+    color: #6c757d;
+}
+
+.loading-spinner {
+    text-align: center;
+    padding: 20px;
+    display: none;
+}
+
+.current-booking-info {
+    background-color: rgba(248, 249, 250, 0.7);
+    border-left: 4px solid #20c997;
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 6px;
+}
+
+.tab-content {
+    padding: 20px 0;
+}
+
+.nav-tabs .nav-link {
+    color: #495057;
+    font-weight: 500;
+}
+
+.nav-tabs .nav-link.active {
+    color: #212529;
+    font-weight: 600;
+    border-bottom: 2px solid #212529;
+}
+
+.available-dates {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 15px;
+}
+
+.date-card {
+    flex: 1;
+    min-width: 70px;
+    border: 1px solid #ced4da;
+    border-radius: 6px;
+    padding: 8px 5px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    background-color: white;
+}
+
+.date-card:hover:not(.disabled) {
+    background-color: #e9ecef;
+    border-color: #adb5bd;
+}
+
+.date-card.active {
+    background-color: #212529;
+    color: white;
+    border-color: #212529;
+}
+
+.date-card .day-name {
+    font-size: 0.8rem;
+    color: #6c757d;
+    margin-bottom: 2px;
+}
+
+.date-card .day-number {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 2px;
+}
+
+.date-card .month-name {
+    font-size: 0.8rem;
+    color: #6c757d;
+}
+
+.date-card.disabled {
+    opacity: 0.6;
+    background-color: #e9ecef;
+    border-color: #dee2e6;
+    cursor: not-allowed;
+    color: #adb5bd;
+    transition: none;
+    pointer-events: none;
+}
+
+.date-card.disabled .day-name,
+.date-card.disabled .month-name,
+.date-card.disabled .day-number {
+    color: #adb5bd;
+}
+
+.date-navigation {
+    margin-bottom: 15px;
+}
+
+.booking-step {
+    display: none;
+}
+
+.booking-step.active {
+    display: block;
+    animation: fadeIn 0.5s;
+}
+
+.step-indicator {
+    display: flex;
+    margin-bottom: 30px;
+}
+
+.step {
+    flex: 1;
+    text-align: center;
+    padding: 10px;
+    position: relative;
+}
+
+.step::after {
+    content: "";
+    position: absolute;
+    height: 2px;
+    background-color: #dee2e6;
+    top: 50%;
+    width: 100%;
+    left: 50%;
+    z-index: -1;
+}
+
+.step:last-child::after {
+    display: none;
+}
+
+.step-number {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #dee2e6;
+    color: #6c757d;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.step.active .step-number {
+    background-color: #212529;
+    color: white;
+}
+
+.step-title {
+    font-weight: 500;
+    color: #6c757d;
+}
+
+.step.active .step-title {
+    color: #212529;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.booking-card {
+    transition: all 0.3s;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 20px;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+.booking-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.2);
+}
+
+.booking-header {
+    background-color: #212529;
+    color: white;
+    padding: 15px;
+}
+
+.booking-body {
+    padding: 20px;
+    background-color: #f8f9fa;
+}
+
+.booking-footer {
+    padding: 15px;
+    background-color: #e9ecef;
+    border-top: 1px solid #dee2e6;
+}
+
+.booking-info {
+    margin-bottom: 15px;
+}
+
+.booking-info-label {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.status-badge {
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 50px 0;
+}
+
+.empty-state-icon {
+    font-size: 4rem;
+    color: #adb5bd;
+    margin-bottom: 20px;
+}
+
+.actions-container {
+    margin-bottom: 30px;
+}

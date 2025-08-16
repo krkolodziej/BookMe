@@ -1,0 +1,102 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edytuj Opinię - {{ service.name }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('styles/admin/opinion/styles.css') }}">
+    <style>
+        /* Ukryj standardowe radiobuttony dla oceny */
+        .rating-group {
+            display: none !important;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="container mt-5 mb-5">
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="alert alert-{{ label }} alert-dismissible fade show">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endfor %}
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Edytuj Opinię - {{ service.name }}</h2>
+            <a href="{{ path('admin_opinion_index', {'encodedName': encodedName}) }}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-2"></i>Powrót do Listy Opinii
+            </a>
+        </div>
+
+        <div class="admin-section">
+            <div class="admin-section-header">
+                <h3 class="m-0"><i class="fas fa-edit me-2"></i>Edycja Opinii</h3>
+            </div>
+            <div class="admin-section-body">
+                <div class="opinion-details">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><span class="detail-label">Użytkownik:</span> <span class="detail-value">{{ opinion.booking.user.firstName }} {{ opinion.booking.user.lastName }}</span></p>
+                            <p><span class="detail-label">Oferta:</span> <span class="detail-value">{{ opinion.booking.offer.name }}</span></p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><span class="detail-label">Pracownik:</span> <span class="detail-value">{{ opinion.booking.employee ? opinion.booking.employee.user.firstName ~ ' ' ~ opinion.booking.employee.user.lastName : 'Brak przypisanego pracownika' }}</span></p>
+                            <p><span class="detail-label">Data utworzenia:</span> <span class="detail-value">{{ opinion.createdAt|date('d.m.Y H:i') }}</span></p>
+                        </div>
+                    </div>
+                </div>
+
+                {{ form_start(form) }}
+
+                <div class="mb-4">
+                    {{ form_label(form.rating) }}
+                    <div class="rating-group">
+                        {{ form_widget(form.rating) }}
+                    </div>
+                    {{ form_errors(form.rating) }}
+                    
+                    <!-- Niestandardowe gwiazdki jako widoczny element UI -->
+                    <div class="pure-stars-rating">
+                        <div class="stars-container">
+                            <span class="star" data-value="5"><i class="fas fa-star"></i></span>
+                            <span class="star" data-value="4"><i class="fas fa-star"></i></span>
+                            <span class="star" data-value="3"><i class="fas fa-star"></i></span>
+                            <span class="star" data-value="2"><i class="fas fa-star"></i></span>
+                            <span class="star" data-value="1"><i class="fas fa-star"></i></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    {{ form_label(form.content) }}
+                    {{ form_widget(form.content, {'attr': {'rows': 5}}) }}
+                    {{ form_errors(form.content) }}
+                </div>
+
+                <div class="d-flex justify-content-between mt-4">
+                    <a href="{{ path('admin_opinion_index', {'encodedName': encodedName}) }}" class="btn btn-outline-secondary">
+                        <i class="fas fa-times me-2"></i>Anuluj
+                    </a>
+                    <button type="submit" class="btn btn-dark">
+                        <i class="fas fa-save me-2"></i>Zapisz zmiany
+                    </button>
+                </div>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        const ratingConfig = {
+            inputId: 'opinion_rating_value',
+            currentRating: {{ opinion.rating }}
+        };
+    </script>
+    <script src="{{ asset('js/admin/opinion/edit.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,327 @@
+
+.admin-section {
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    transition: all 0.3s;
+    overflow: hidden;
+    margin-bottom: 2rem;
+}
+
+.admin-section:hover {
+    box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.2);
+}
+
+.admin-section-header {
+    background-color: #212529;
+    color: white;
+    padding: 1.2rem;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.admin-section-body {
+    padding: 2rem;
+}
+
+.form-control, .form-select {
+    border-radius: 6px;
+    padding: 0.6rem 1rem;
+    border: 1px solid #ced4da;
+    transition: all 0.3s;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #555;
+    box-shadow: 0 0 0 0.25rem rgba(33, 37, 41, 0.25);
+}
+
+.form-label {
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+.btn-dark {
+    background-color: #212529;
+    border: none;
+    padding: 0.6rem 1.5rem;
+    border-radius: 6px;
+    font-weight: 500;
+    transition: all 0.3s;
+}
+
+.btn-dark:hover {
+    background-color: #000;
+    transform: translateY(-2px);
+    box-shadow: 0 0.3rem 0.5rem rgba(0, 0, 0, 0.2);
+}
+
+.table-custom {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin-bottom: 1rem;
+}
+
+.table-custom th {
+    background-color: #212529;
+    color: white;
+    font-weight: 500;
+    padding: 0.75rem;
+    text-align: center;
+    vertical-align: middle;
+    position: sticky;
+    top: 0;
+}
+
+.table-custom td {
+    padding: 0.75rem;
+    vertical-align: middle;
+    text-align: center;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.table-custom tbody tr {
+    transition: all 0.2s;
+}
+
+.table-custom tbody tr:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+    transform: translateY(-2px);
+    box-shadow: 0 0.2rem 0.3rem rgba(0, 0, 0, 0.05);
+}
+
+.pagination {
+    justify-content: center;
+    margin-top: 2rem;
+}
+
+.page-item.active .page-link {
+    background-color: #212529;
+    border-color: #212529;
+}
+
+.page-link {
+    color: #212529;
+    transition: all 0.2s;
+}
+
+.page-link:hover {
+    transform: scale(1.05);
+    z-index: 3;
+}
+
+.action-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.action-btn {
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    padding: 0.4rem 0.8rem;
+}
+
+.action-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 0.3rem 0.5rem rgba(0, 0, 0, 0.2);
+}
+
+.search-box {
+    display: flex;
+    margin-bottom: 2rem;
+}
+
+.search-input {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    border-right: none;
+    flex-grow: 1;
+    transition: all 0.3s;
+}
+
+.search-input:focus {
+    box-shadow: 0 0 0 0.25rem rgba(33, 37, 41, 0.25);
+    border-color: #555;
+}
+
+.search-button {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+.service-image {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 6px;
+    transition: all 0.3s;
+    box-shadow: 0 0.2rem 0.4rem rgba(0, 0, 0, 0.1);
+}
+
+.service-image:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0.3rem 0.6rem rgba(0, 0, 0, 0.2);
+}
+
+.no-image {
+    width: 100px;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f1f1f1;
+    border-radius: 6px;
+    color: #6c757d;
+    margin: 0 auto;
+}
+
+.filters-bar {
+    background-color: #f1f1f1;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.service-name {
+    font-weight: 500;
+    color: #212529;
+    transition: all 0.2s;
+}
+
+.service-name:hover {
+    color: #0056b3;
+    text-decoration: underline;
+}
+
+.category-badge {
+    background-color: #212529;
+    color: white;
+    padding: 0.3rem 0.8rem;
+    border-radius: 20px;
+}
+
+.option-card {
+    border-radius: 10px;
+    overflow: hidden;
+    transition: all 0.3s;
+    height: 100%;
+    border: none;
+}
+
+.option-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 1rem 1.5rem rgba(0, 0, 0, 0.2);
+}
+
+.option-card .card-header {
+    background-color: #212529;
+    color: white;
+    font-weight: 500;
+    padding: 1rem;
+}
+
+.option-card .card-body {
+    background-color: #343a40;
+    color: white;
+    padding: 1.5rem;
+}
+
+.tab-content {
+    padding-top: 2rem;
+}
+
+.nav-tabs .nav-link {
+    border: none;
+    padding: 1rem 1.5rem;
+    font-weight: 500;
+    color: #555;
+}
+
+.nav-tabs .nav-link.active {
+    background-color: #212529;
+    color: white;
+    border-radius: 6px 6px 0 0;
+}
+
+.preview-image {
+    max-width: 100%;
+    max-height: 200px;
+    border-radius: 6px;
+    box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.15);
+    margin-top: 1rem;
+}
+
+.alert {
+    border-radius: 6px;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.step-indicator {
+    display: flex;
+    margin-bottom: 2rem;
+}
+
+.step {
+    flex: 1;
+    text-align: center;
+    padding: 1rem;
+    position: relative;
+}
+
+.step::after {
+    content: "";
+    position: absolute;
+    height: 2px;
+    background-color: #dee2e6;
+    top: 50%;
+    width: 100%;
+    left: 50%;
+    z-index: -1;
+}
+
+.step:last-child::after {
+    display: none;
+}
+
+.step-number {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #dee2e6;
+    color: #6c757d;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+.step.active .step-number {
+    background-color: #212529;
+    color: white;
+}
+
+.step-title {
+    font-weight: 500;
+    color: #6c757d;
+}
+
+.step.active .step-title {
+    color: #212529;
+}
+
+.management-options {
+    margin-bottom: 2rem;
+}

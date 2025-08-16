@@ -1,0 +1,109 @@
+/* Shared styles for both swipers */
+.swiper-container-wrapper,
+.categories-container-wrapper {
+    position: relative;
+    margin: 0 50px;
+}
+
+.category-link {
+    /* Twoje podstawowe style dla linku */
+    text-decoration: none;
+    padding-bottom: 5px;
+    border-bottom: 2px solid transparent;
+}
+
+.category-link.active {
+    border-bottom: 2px solid black;
+}
+
+.swiper1,
+.swiper2 {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+}
+
+.swiper1 .swiper-wrapper,
+.swiper2 .swiper-wrapper {
+    display: flex;
+}
+
+/* Specific styles for swiper1 (recommended) */
+.swiper1 .swiper-slide {
+    width: 300px !important;
+    margin-right: 20px;
+    flex-shrink: 0;
+}
+
+/* Specific styles for swiper2 (categories) */
+.swiper2 .swiper-slide {
+    width: 120px !important; /* Smaller width for category items */
+    margin-right: 15px;
+    flex-shrink: 0;
+}
+
+/* Shared navigation button styles */
+.swiper-button-prev1,
+.swiper-button-next1,
+.swiper-button-prev2,
+.swiper-button-next2 {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 40px;
+    height: 40px;
+    background: white;
+    border-radius: 50%;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+/* Position for navigation buttons */
+.swiper-button-prev1,
+.swiper-button-prev2 {
+    left: -50px;
+}
+
+.swiper-button-next1,
+.swiper-button-next2 {
+    right: -50px;
+}
+
+/* Remove default swiper button content */
+.swiper-button-prev1::after,
+.swiper-button-next1::after,
+.swiper-button-prev2::after,
+.swiper-button-next2::after {
+    display: none;
+}
+
+/* Card hover effects */
+.swiper1 .card,
+.swiper2 .card {
+    height: 100%;
+    transition: transform 0.2s;
+}
+
+.swiper1 .card:hover,
+.swiper2 .card:hover {
+    transform: translateY(-5px);
+}
+
+/* Image sizing */
+.swiper1 .card-img-top {
+    height: 180px;
+    object-fit: cover;
+}
+
+/* Categories specific styles */
+.swiper2 .rounded-circle {
+    transition: transform 0.2s;
+}
+
+.swiper2 a:hover .rounded-circle {
+    transform: translateY(-5px);
+}

@@ -1,0 +1,142 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Zarządzanie Kategoriami{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('styles/admin/service_category/styles.css') }}">
+{% endblock %}
+
+{% block body %}
+    <div class="container mt-5 mb-5">
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="alert alert-{{ label }} alert-dismissible fade show">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endfor %}
+
+        <h2 class="mb-4">Zarządzanie Kategoriami</h2>
+
+        <div class="admin-section">
+            <div class="admin-section-header">
+                <h3 class="m-0"><i class="fas fa-list me-2"></i>Lista Kategorii</h3>
+                <a href="{{ path('admin_service_category_create') }}" class="btn btn-light btn-sm">
+                    <i class="fas fa-plus me-1"></i>Dodaj Nową Kategorię
+                </a>
+            </div>
+
+            <div class="admin-section-body">
+                <form method="get" class="search-box">
+                    <input type="text" name="searchTerm" class="form-control search-input" placeholder="Wyszukaj po nazwie" value="{{ searchTerm }}">
+                    <button class="btn btn-dark search-button" type="submit">
+                        <i class="fas fa-search me-1"></i>Szukaj
+                    </button>
+                </form>
+
+                {% if categories|length > 0 %}
+                    <div class="filters-bar">
+                        <div>
+                            <span>Znaleziono: {{ categories|length }}</span>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table-custom">
+                            <thead>
+                            <tr>
+                                <th style="width: 40%;">Nazwa Kategorii</th>
+                                <th style="width: 20%;">Liczba Serwisów</th>
+                                <th style="width: 20%;">Obrazek</th>
+                                <th style="width: 20%;">Akcje</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for category in categories %}
+                                <tr>
+                                    <td>
+                                        <a href="{{ path('admin_service_category_edit', {'encodedName': category.encodedName}) }}" class="category-name">
+                                            {{ category.name }}
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <span class="services-count">
+                                            {{ category.services|length }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        {% if category.imageUrl %}
+                                            <img src="{{ category.imageUrl }}" alt="{{ category.name }}" class="category-image" />
+                                        {% else %}
+                                            <div class="no-image">
+                                                <i class="fas fa-image"></i>
+                                            </div>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <a href="{{ path('admin_service_category_edit', {'encodedName': category.encodedName}) }}" class="btn btn-outline-dark btn-sm action-btn" title="Edytuj">
+                                                <i class="fas fa-edit me-1"></i>Edytuj
+                                            </a>
+                                            <form action="{{ path('admin_service_category_delete', {'encodedName': category.encodedName}) }}" method="post" onsubmit="return confirm('Czy na pewno chcesz usunąć tę kategorię?');">
+                                                <button type="submit" class="btn btn-danger btn-sm action-btn" title="Usuń">
+                                                    <i class="fas fa-trash me-1"></i>Usuń
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    {% if pagination is defined %}
+                        <nav aria-label="Page navigation">
+                            <ul class="pagination">
+                                {% if pagination.currentPage > 1 %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="{{ path('admin_service_category_index', {'page': pagination.currentPage - 1, 'searchTerm': searchTerm}) }}" aria-label="Previous">
+                                            <span aria-hidden="true">&laquo;</span>
+                                        </a>
+                                    </li>
+                                {% endif %}
+
+                                {% for i in 1..pagination.totalPages %}
+                                    <li class="page-item {{ pagination.currentPage == i ? 'active' : '' }}">
+                                        <a class="page-link" href="{{ path('admin_service_category_index', {'page': i, 'searchTerm': searchTerm}) }}">{{ i }}</a>
+                                    </li>
+                                {% endfor %}
+
+                                {% if pagination.currentPage < pagination.totalPages %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="{{ path('admin_service_category_index', {'page': pagination.currentPage + 1, 'searchTerm': searchTerm}) }}" aria-label="Next">
+                                            <span aria-hidden="true">&raquo;</span>
+                                        </a>
+                                    </li>
+                                {% endif %}
+                            </ul>
+                        </nav>
+                    {% endif %}
+                {% else %}
+                    <div class="empty-state">
+                        <div class="empty-state-icon">
+                            <i class="fas fa-list-alt"></i>
+                        </div>
+                        <p class="empty-state-text">Nie znaleziono żadnych kategorii.</p>
+                        <a href="{{ path('admin_service_category_create') }}" class="btn btn-dark">
+                            <i class="fas fa-plus me-2"></i>Dodaj Pierwszą Kategorię
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('js/admin/service_category/index.js') }}"></script>
+{% endblock %}

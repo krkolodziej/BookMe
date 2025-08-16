@@ -1,0 +1,130 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Profil pracownika - {{ employee.user.fullName }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ asset('styles/employee/styles.css') }}">
+{% endblock %}
+
+{% block body %}
+    <div class="container mt-5 mb-5">
+        <div class="back-to-service">
+            <a href="{{ path('service_show', {'encodedName': employee.service.encodedName}) }}" class="btn-back">
+                <i class="fas fa-arrow-left"></i> Powrót do {{ employee.service.name }}
+            </a>
+        </div>
+
+        <!-- Profil header -->
+        <div class="profile-header">
+            <div class="profile-cover">
+                <img class="profile-avatar" src="{{ employee.user.avatarUrl ?: 'https://sbcf.fr/wp-content/uploads/2018/03/sbcf-default-avatar.png' }}" alt="{{ employee.user.fullName }}">
+            </div>
+            <div class="profile-info">
+                <h1 class="profile-name">{{ employee.user.fullName }}</h1>
+                <div class="profile-service">Pracownik w {{ employee.service.name }}</div>
+
+                <div class="profile-stats">
+                    <div class="stat-item">
+                        <div class="stat-value">{{ statistics.averageRating }}/5</div>
+                        <div class="stat-label">Średnia ocena</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">{{ statistics.opinionsCount }}</div>
+                        <div class="stat-label">Liczba opinii</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">{{ employee.bookings|length }}</div>
+                        <div class="stat-label">Wykonanych usług</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Lewa kolumna - informacje i usługi -->
+            <div class="col-md-4">
+                <!-- Sekcja usług -->
+                <div class="profile-section">
+                    <h2 class="section-title">Wykonywane usługi</h2>
+
+                    {% if offers|length > 0 %}
+                        {% for offer in offers %}
+                            <div class="offer-card">
+                                <div class="offer-name">{{ offer.name }}</div>
+                                <div class="d-flex justify-content-between offer-details">
+                                    <span><i class="far fa-clock"></i> {{ offer.duration }} min</span>
+                                    <span class="offer-price">{{ offer.price }} zł</span>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-muted">Brak dostępnych usług.</p>
+                    {% endif %}
+                </div>
+
+                <!-- Sekcja kontaktu -->
+                <div class="profile-section">
+                    <h2 class="section-title">Gdzie pracuje</h2>
+                    <p>
+                        <strong>{{ employee.service.name }}</strong><br>
+                        {{ employee.service.street }}<br>
+                        {{ employee.service.postalCode }} {{ employee.service.city }}
+                    </p>
+
+                    <p class="mb-2">
+                        <i class="fas fa-phone me-2"></i> {{ employee.service.phoneNumber }}
+                    </p>
+                </div>
+            </div>
+
+            <!-- Prawa kolumna - opinie -->
+            <div class="col-md-8">
+                <div class="profile-section">
+                    <h2 class="section-title">
+                        Opinie klientów
+                        {% if statistics.averageRating > 0 %}
+                            <span class="float-end">
+                                <div class="rating-box">
+                                    {{ statistics.averageRating }}
+                                    <i class="fas fa-star rating-star"></i>
+                                </div>
+                                <span class="text-muted">{{ statistics.opinionsCount }} opinii</span>
+                            </span>
+                        {% endif %}
+                    </h2>
+
+                    {% if opinions|length > 0 %}
+                        {% for opinion in opinions %}
+                            <div class="opinion-card">
+                                <div class="opinion-header">
+                                    <img class="opinion-avatar" src="{{ opinion.booking.user.avatarUrl ?: 'https://sbcf.fr/wp-content/uploads/2018/03/sbcf-default-avatar.png' }}"
+                                         alt="{{ opinion.booking.user.fullName }}">
+                                    <div>
+                                        <div class="opinion-author">{{ opinion.booking.user.fullName }}</div>
+                                        <div class="opinion-date">{{ opinion.createdAt|date('d.m.Y') }}</div>
+                                    </div>
+                                    <div class="opinion-rating">
+                                        {% for i in 1..5 %}
+                                            <i class="fas fa-star {% if i <= opinion.rating %}opinion-star{% else %}text-muted{% endif %}"></i>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                <div class="opinion-text">
+                                    {{ opinion.content }}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="no-opinions">
+                            <i class="far fa-comment-dots fa-3x mb-3"></i>
+                            <h5>Brak opinii</h5>
+                            <p>Ten pracownik nie ma jeszcze żadnych opinii.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

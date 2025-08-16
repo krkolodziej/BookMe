@@ -1,0 +1,80 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Dodaj opinię{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('styles/opinion/styles.css') }}">
+{% endblock %}
+
+{% block body %}
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-white">
+                        <h1 class="h3 mb-0">Dodaj opinię</h1>
+                    </div>
+                    <div class="card-body">
+                        <!-- Informacje o wizycie -->
+                        <div class="bg-light p-3 mb-4 rounded">
+                            <h2 class="h5 mb-3">Informacje o wizycie</h2>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p class="mb-2"><strong>Usługa:</strong> {{ booking.offer.name }}</p>
+                                    <p class="mb-2"><strong>Data:</strong> {{ booking.startTime|date('d.m.Y H:i') }}</p>
+                                </div>
+                                <div class="col-md-6">
+                                    {% if booking.employee %}
+                                        <p class="mb-2"><strong>Pracownik:</strong> {{ booking.employee.user.firstName }} {{ booking.employee.user.lastName }}</p>
+                                    {% endif %}
+                                    <p class="mb-2"><strong>Czas trwania:</strong> {{ booking.offer.duration }} min</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Formularz z ręcznie stworzonymi gwiazdkami -->
+                        {{ form_start(form) }}
+                        {{ form_row(form._token) }}
+                        <!-- Ukryte pole na ocenę (zastępuje radiobuttony) -->
+                        <input type="hidden" name="opinion[rating]" id="opinion_rating_value" value="5">
+
+                        <!-- Niestandardowe gwiazdki (całkowicie oddzielone od formularza) -->
+                        <div class="pure-stars-rating">
+                            <label class="rating-label">Ocena</label>
+                            <div class="stars-container">
+                                <span class="star" data-value="5"><i class="fas fa-star"></i></span>
+                                <span class="star" data-value="4"><i class="fas fa-star"></i></span>
+                                <span class="star" data-value="3"><i class="fas fa-star"></i></span>
+                                <span class="star" data-value="2"><i class="fas fa-star"></i></span>
+                                <span class="star" data-value="1"><i class="fas fa-star"></i></span>
+                            </div>
+                            {{ form_errors(form.rating, {'attr': {'class': 'text-danger small mt-1'}}) }}
+                        </div>
+
+                        <div class="mb-4">
+                            {{ form_label(form.content, null, {'label_attr': {'class': 'form-label'}}) }}
+                            {{ form_widget(form.content, {'attr': {'class': 'form-control', 'rows': 5, 'placeholder': 'Podziel się swoją opinią na temat usługi...'}}) }}
+                            {{ form_errors(form.content, {'attr': {'class': 'text-danger small mt-1'}}) }}
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <a href="{{ path('booking_index') }}" class="btn btn-outline-secondary">
+                                <i class="fas fa-times me-2"></i>Anuluj
+                            </a>
+                            <button type="submit" class="btn btn-dark">
+                                <i class="fas fa-save me-2"></i>Dodaj opinię
+                            </button>
+                        </div>
+                        {{ form_end(form, {'render_rest': false}) }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('js/opinion/create.js') }}"></script>
+{% endblock %}

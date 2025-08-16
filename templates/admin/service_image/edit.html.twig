@@ -1,0 +1,108 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edytuj Zdjęcie - {{ service.name }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('styles/admin/service_image/styles.css') }}">
+{% endblock %}
+
+{% block body %}
+    <div class="container mt-5 mb-5">
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="alert alert-{{ label }} alert-dismissible fade show">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endfor %}
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Edytuj Zdjęcie - {{ service.name }}</h2>
+            <a href="{{ path('admin_service_image_index', {'encodedName': encodedName}) }}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-2"></i>Powrót do Galerii
+            </a>
+        </div>
+
+        <div class="admin-section">
+            <div class="admin-section-header">
+                <h3 class="m-0"><i class="fas fa-edit me-2"></i>Edycja Zdjęcia</h3>
+            </div>
+            <div class="admin-section-body">
+                <div class="current-image-container">
+                    <div class="current-image-label">
+                        <i class="fas fa-image"></i>
+                        Aktualne zdjęcie
+                    </div>
+                    <img src="{{ serviceImage.url }}" alt="Aktualne zdjęcie" class="image-preview" id="current-image">
+                </div>
+
+                {{ form_start(form) }}
+                <div class="mb-4">
+                    {{ form_label(form.url) }}
+                    {{ form_widget(form.url) }}
+                    {{ form_errors(form.url) }}
+                    <small class="form-text text-muted">Wprowadź pełny URL do zdjęcia, np. https://example.com/image.jpg</small>
+                </div>
+
+                <div id="image-preview-container" class="image-preview-container {% if serviceImage.url %}d-block{% endif %}">
+                    <h5 class="mb-3">Nowy podgląd zdjęcia:</h5>
+                    <img src="{{ serviceImage.url }}" alt="Podgląd zdjęcia" id="image-preview" class="image-preview">
+                </div>
+
+                <div class="d-flex justify-content-between mt-4">
+                    <div>
+                        <a href="{{ path('admin_service_image_index', {'encodedName': encodedName}) }}" class="btn btn-outline-secondary me-2">
+                            <i class="fas fa-times me-2"></i>Anuluj
+                        </a>
+                        <a href="#" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                            <i class="fas fa-trash me-2"></i>Usuń
+                        </a>
+                    </div>
+                    <button type="submit" class="btn btn-dark">
+                        <i class="fas fa-save me-2"></i>Zapisz zmiany
+                    </button>
+                </div>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteModalLabel">Potwierdź usunięcie</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Czy na pewno chcesz usunąć to zdjęcie?</p>
+                    <div class="text-center">
+                        <img src="{{ serviceImage.url }}" alt="Zdjęcie do usunięcia" style="max-width: 100%; max-height: 200px; object-fit: contain;">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Anuluj</button>
+                    <form action="{{ path('admin_service_image_delete', {'encodedName': encodedName, 'id': serviceImage.id}) }}" method="post">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ serviceImage.id) }}">
+                        <button type="submit" class="btn btn-danger">Usuń</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        const imageConfig = {
+            inputId: '{{ form.url.vars.id }}',
+            previewContainerId: 'image-preview-container',
+            currentImageUrl: '{{ serviceImage.url }}'
+        };
+    </script>
+    <script src="{{ asset('js/admin/service_image/edit.js') }}"></script>
+{% endblock %}

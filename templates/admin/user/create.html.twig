@@ -1,0 +1,187 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Dodaj Nowego Użytkownika{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="{{ asset('styles/admin/user/styles.css') }}">
+{% endblock %}
+
+{% block body %}
+    <div class="container mt-5 mb-5">
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="alert alert-{{ label }} alert-dismissible fade show">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endfor %}
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Dodaj Nowego Użytkownika</h2>
+            <a href="{{ path('admin_user_index') }}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-2"></i>Powrót do Listy Użytkowników
+            </a>
+        </div>
+
+        <div class="admin-section">
+            <div class="admin-section-header">
+                <h3 class="m-0"><i class="fas fa-plus me-2"></i>Nowy Użytkownik</h3>
+            </div>
+            <div class="admin-section-body">
+                {{ form_start(form) }}
+                <div class="form-section">
+                    <div class="form-section-title">Dane Osobowe</div>
+                    <div class="row">
+                        <div class="col-md-6 mb-4">
+                            {{ form_label(form.firstName) }}
+                            {{ form_widget(form.firstName) }}
+                            {{ form_errors(form.firstName) }}
+                        </div>
+                        <div class="col-md-6 mb-4">
+                            {{ form_label(form.lastName) }}
+                            {{ form_widget(form.lastName) }}
+                            {{ form_errors(form.lastName) }}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-4">
+                            {{ form_label(form.email) }}
+                            {{ form_widget(form.email) }}
+                            {{ form_errors(form.email) }}
+                        </div>
+                        <div class="col-md-6 mb-4">
+                            {{ form_label(form.gender) }}
+                            {{ form_widget(form.gender) }}
+                            {{ form_errors(form.gender) }}
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        {{ form_label(form.avatarUrl) }}
+                        {{ form_widget(form.avatarUrl) }}
+                        {{ form_errors(form.avatarUrl) }}
+
+                        <div id="avatar-preview-container" class="avatar-preview-container">
+                            <img src="" id="avatar-preview" class="avatar-preview" alt="Podgląd zdjęcia">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <div class="form-section-title">Dane Logowania</div>
+                    <div class="row">
+                        <div class="col-md-6 mb-4">
+                            {{ form_label(form.password.first) }}
+                            {{ form_widget(form.password.first) }}
+                            {{ form_errors(form.password.first) }}
+                        </div>
+                        <div class="col-md-6 mb-4">
+                            {{ form_label(form.password.second) }}
+                            {{ form_widget(form.password.second) }}
+                            {{ form_errors(form.password.second) }}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <div class="form-section-title">Uprawnienia</div>
+                    <div class="mb-4">
+                        <div class="form-check form-switch">
+                            {{ form_widget(form.isAdmin) }}
+                            {{ form_label(form.isAdmin) }}
+                        </div>
+                        <small class="form-text text-muted">Zaznacz, jeśli użytkownik ma mieć uprawnienia administratora</small>
+                    </div>
+                    <div class="mb-4">
+                        <div class="form-check form-switch">
+                            {{ form_widget(form.createAsEmployee) }}
+                            {{ form_label(form.createAsEmployee) }}
+                        </div>
+                        <small class="form-text text-muted">Zaznacz, jeśli chcesz utworzyć tego użytkownika jako pracownika</small>
+                    </div>
+                </div>
+
+                <div class="form-section employee-section" id="employee-service-section">
+                    <div class="form-section-title">Wybór Serwisu</div>
+                    <div class="mb-4">
+                        {{ form_label(form.service) }}
+                        <div class="select-container">
+                            {{ form_widget(form.service, {'attr': {'class': 'searchable-select', 'data-placeholder': 'Wyszukaj serwis...'}}) }}
+                        </div>
+                        <small class="form-text text-muted">Wybierz serwis, w którym pracownik będzie pracował</small>
+                        {{ form_errors(form.service) }}
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between mt-4">
+                    <a href="{{ path('admin_user_index') }}" class="btn btn-outline-secondary">
+                        <i class="fas fa-times me-2"></i>Anuluj
+                    </a>
+                    <button type="submit" class="btn btn-dark">
+                        <i class="fas fa-save me-2"></i>Zapisz użytkownika
+                    </button>
+                </div>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize Select2 for service dropdown
+            $('#{{ form.service.vars.id }}').select2({
+                placeholder: 'Wybierz serwis...',
+                allowClear: true,
+                width: '100%',
+                language: {
+                    noResults: function() {
+                        return "Brak wyników";
+                    },
+                    searching: function() {
+                        return "Szukanie...";
+                    }
+                }
+            });
+
+            // Obsługa podglądu zdjęcia
+            const avatarUrlInput = document.getElementById('{{ form.avatarUrl.vars.id }}');
+            const avatarPreview = document.getElementById('avatar-preview');
+            const avatarPreviewContainer = document.getElementById('avatar-preview-container');
+
+            avatarUrlInput.addEventListener('input', function() {
+                const imageUrl = this.value.trim();
+                if (imageUrl) {
+                    avatarPreview.src = imageUrl;
+                    avatarPreviewContainer.style.display = 'block';
+                } else {
+                    avatarPreviewContainer.style.display = 'none';
+                }
+            });
+
+            // Toggle employee service section based on checkbox
+            const createAsEmployeeCheckbox = document.getElementById('{{ form.createAsEmployee.vars.id }}');
+            const employeeServiceSection = document.getElementById('employee-service-section');
+
+            createAsEmployeeCheckbox.addEventListener('change', function() {
+                if (this.checked) {
+                    employeeServiceSection.classList.add('active');
+                } else {
+                    employeeServiceSection.classList.remove('active');
+                }
+            });
+
+            // Show the section if the checkbox is already checked (e.g. after form submission with errors)
+            if (createAsEmployeeCheckbox.checked) {
+                employeeServiceSection.classList.add('active');
+            }
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,511 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Panel Administracyjny{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('styles/admin.css') }}">
+{% endblock %}
+
+{% block body %}
+    <div class="admin-dashboard">
+        <!-- Header Section -->
+        <div class="admin-header">
+            <div class="container">
+                <div class="header-content">
+                    <div class="header-text">
+                        <h1 class="admin-title">
+                            <i class="fas fa-tachometer-alt admin-title-icon"></i>
+                            Panel Administracyjny
+                        </h1>
+                        <p class="admin-subtitle">Zarządzaj systemem z jednego miejsca</p>
+                    </div>
+                    <div class="header-stats">
+                        <div class="stat-card">
+                            <div class="stat-number">{{ stats.totalServices ?? '0' }}</div>
+                            <div class="stat-label">Serwisy</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">{{ stats.totalUsers ?? '0' }}</div>
+                            <div class="stat-label">Użytkownicy</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="container admin-content">
+            <!-- Quick Actions -->
+            <div class="section-header">
+                <h3>Szybkie akcje</h3>
+                <p>Wybierz moduł do zarządzania</p>
+            </div>
+
+            <div class="admin-grid">
+                <!-- Zarządzaj Serwisami -->
+                <div class="admin-module-card services">
+                    <div class="card-background">
+                        <div class="background-pattern"></div>
+                    </div>
+                    <div class="card-content">
+                        <div class="module-icon">
+                            <i class="fas fa-cogs"></i>
+                        </div>
+                        <div class="module-info">
+                            <h4 class="module-title">Serwisy</h4>
+                            <p class="module-description">Zarządzaj dostępnymi usługami i ich parametrami</p>
+                            <div class="module-stats">
+                                <span class="stat-badge">{{ stats.activeServices ?? '0' }} aktywnych</span>
+                            </div>
+                        </div>
+                        <div class="module-actions">
+                            <a href="{{ path('admin_service_index') }}" class="btn-primary">
+                                <span>Zarządzaj</span>
+                                <i class="fas fa-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Zarządzaj Kategoriami -->
+                <div class="admin-module-card categories">
+                    <div class="card-background">
+                        <div class="background-pattern"></div>
+                    </div>
+                    <div class="card-content">
+                        <div class="module-icon">
+                            <i class="fas fa-layer-group"></i>
+                        </div>
+                        <div class="module-info">
+                            <h4 class="module-title">Kategorie</h4>
+                            <p class="module-description">Organizuj serwisy w logiczne grupy</p>
+                            <div class="module-stats">
+                                <span class="stat-badge">{{ stats.totalCategories ?? '0' }} kategorii</span>
+                            </div>
+                        </div>
+                        <div class="module-actions">
+                            <a href="{{ path('admin_service_category_index') }}" class="btn-primary">
+                                <span>Zarządzaj</span>
+                                <i class="fas fa-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Zarządzaj Pracownikami -->
+                <div class="admin-module-card employees">
+                    <div class="card-background">
+                        <div class="background-pattern"></div>
+                    </div>
+                    <div class="card-content">
+                        <div class="module-icon">
+                            <i class="fas fa-users-cog"></i>
+                        </div>
+                        <div class="module-info">
+                            <h4 class="module-title">Pracownicy</h4>
+                            <p class="module-description">Zarządzaj zespołem i uprawnieniami</p>
+                            <div class="module-stats">
+                                <span class="stat-badge">{{ stats.activeEmployees ?? '0' }} aktywnych</span>
+                            </div>
+                        </div>
+                        <div class="module-actions">
+                            <a href="{{ path('admin_general_employee_index') }}" class="btn-primary">
+                                <span>Zarządzaj</span>
+                                <i class="fas fa-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Zarządzaj Użytkownikami -->
+                <div class="admin-module-card users">
+                    <div class="card-background">
+                        <div class="background-pattern"></div>
+                    </div>
+                    <div class="card-content">
+                        <div class="module-icon">
+                            <i class="fas fa-user-shield"></i>
+                        </div>
+                        <div class="module-info">
+                            <h4 class="module-title">Użytkownicy</h4>
+                            <p class="module-description">Zarządzaj kontami użytkowników systemu</p>
+                            <div class="module-stats">
+                                <span class="stat-badge">{{ stats.totalUsers ?? '0' }} aktywnych</span>
+                            </div>
+                        </div>
+                        <div class="module-actions">
+                            <a href="{{ path('admin_user_index') }}" class="btn-primary">
+                                <span>Zarządzaj</span>
+                                <i class="fas fa-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+
+            <!-- System Status -->
+            <div class="system-status">
+                <div class="status-header">
+                    <h4>Status systemu</h4>
+                    <div class="status-indicator online">
+                        <span class="indicator-dot"></span>
+                        System działa prawidłowo
+                    </div>
+                </div>
+                <div class="status-grid">
+                    <div class="status-item">
+                        <div class="status-icon">
+                            <i class="fas fa-server"></i>
+                        </div>
+                        <div class="status-info">
+                            <div class="status-label">Serwer</div>
+                            <div class="status-value online">Online</div>
+                        </div>
+                    </div>
+                    <div class="status-item">
+                        <div class="status-icon">
+                            <i class="fas fa-database"></i>
+                        </div>
+                        <div class="status-info">
+                            <div class="status-label">Baza danych</div>
+                            <div class="status-value online">Połączona</div>
+                        </div>
+                    </div>
+                    <div class="status-item">
+                        <div class="status-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <div class="status-info">
+                            <div class="status-label">Bezpieczeństwo</div>
+                            <div class="status-value online">Aktywne</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .admin-dashboard {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        .admin-header {
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            padding: 2rem 0;
+            margin-bottom: 2rem;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 2rem;
+        }
+
+        .admin-title {
+            color: white;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .admin-title-icon {
+            background: linear-gradient(45deg, #fff, #f0f0f0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+        }
+
+        .admin-subtitle {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.1rem;
+            margin: 0.5rem 0 0 0;
+        }
+
+        .header-stats {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            padding: 1.5rem;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: white;
+        }
+
+        .stat-label {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        .admin-content {
+            padding-bottom: 3rem;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-header h3 {
+            color: #1f2937;
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .section-header p {
+            color: #6b7280;
+            font-size: 1.1rem;
+        }
+
+        .admin-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .admin-module-card {
+            position: relative;
+            background: white;
+            border-radius: 24px;
+            padding: 2rem;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        .admin-module-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            border-color: #d1d5db;
+        }
+
+        .card-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            opacity: 0.1;
+            z-index: 1;
+        }
+
+        .background-pattern {
+            width: 100%;
+            height: 100%;
+            background-image: radial-gradient(circle at 20% 20%, currentColor 2px, transparent 0),
+                              radial-gradient(circle at 80% 80%, currentColor 2px, transparent 0);
+            background-size: 30px 30px;
+        }
+
+        .services .background-pattern { color: #1f2937; }
+        .categories .background-pattern { color: #374151; }
+        .employees .background-pattern { color: #4b5563; }
+        .users .background-pattern { color: #6b7280; }
+
+        .card-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .module-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            font-size: 2rem;
+            background: linear-gradient(135deg, var(--icon-bg-start), var(--icon-bg-end));
+            color: white;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .services { --icon-bg-start: #1f2937; --icon-bg-end: #111827; }
+        .categories { --icon-bg-start: #374151; --icon-bg-end: #1f2937; }
+        .employees { --icon-bg-start: #4b5563; --icon-bg-end: #374151; }
+        .users { --icon-bg-start: #6b7280; --icon-bg-end: #4b5563; }
+
+        .module-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+        }
+
+        .module-description {
+            color: #6b7280;
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+
+        .stat-badge {
+            display: inline-block;
+            background: var(--icon-bg-start);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .module-actions {
+            margin-top: 1.5rem;
+        }
+
+        .btn-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: linear-gradient(135deg, var(--icon-bg-start), var(--icon-bg-end));
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: none;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            color: white;
+            text-decoration: none;
+        }
+
+        .system-status {
+            background: white;
+            border-radius: 24px;
+            padding: 2rem;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        .status-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .status-header h4 {
+            color: #1f2937;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 500;
+        }
+
+        .status-indicator.online {
+            color: #10b981;
+        }
+
+        .indicator-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: currentColor;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: rgba(248, 250, 252, 0.8);
+            border-radius: 16px;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .status-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6b7280;
+        }
+
+        .status-label {
+            font-size: 0.9rem;
+            color: #6b7280;
+        }
+
+        .status-value {
+            font-weight: 600;
+        }
+
+        .status-value.online {
+            color: #10b981;
+        }
+
+        @media (max-width: 768px) {
+            .admin-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .admin-title {
+                font-size: 2rem;
+            }
+            
+            .header-stats {
+                justify-content: center;
+            }
+        }
+    </style>
+{% endblock %}

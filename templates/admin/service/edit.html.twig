@@ -1,0 +1,208 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Edytuj Serwis{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('styles/admin/service/styles.css') }}">
+{% endblock %}
+
+{% block body %}
+    <div class="container mt-5 mb-5">
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="alert alert-{{ label }} alert-dismissible fade show">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endfor %}
+
+        <h2 class="mb-4 text-center">{{ service.name }}</h2>
+
+        <div class="management-options">
+            <h4 class="mb-4">Opcje Zarządzania</h4>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card option-card">
+                        <div class="card-header">
+                            <i class="fas fa-calendar-check me-2"></i> Wizyty
+                        </div>
+                        <div class="card-body text-center">
+                            <p class="card-text">Zarządzaj wizytami klientów w serwisie</p>
+                            <a href="{{ path('admin_service_bookings', {'encodedName': service.encodedName}) }}" class="btn btn-light btn-sm w-75">Przejdź</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card option-card">
+                        <div class="card-header">
+                            <i class="fas fa-star me-2"></i> Opinie
+                        </div>
+                        <div class="card-body text-center">
+                            <p class="card-text">Zarządzaj opiniami i recenzjami klientów</p>
+                            <a href="{{ path('admin_opinion_index', {'encodedName': service.encodedName}) }}" class="btn btn-light btn-sm w-75">Przejdź</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card option-card">
+                        <div class="card-header">
+                            <i class="fas fa-clock me-2"></i> Godziny Otwarcia
+                        </div>
+                        <div class="card-body text-center">
+                            <p class="card-text">Ustaw godziny otwarcia serwisu</p>
+                            <a href="{{ path('admin_opening_hours_index', {'encodedName': service.encodedName}) }}" class="btn btn-light btn-sm w-75">Przejdź</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card option-card">
+                        <div class="card-header">
+                            <i class="fas fa-tags me-2"></i> Oferty
+                        </div>
+                        <div class="card-body text-center">
+                            <p class="card-text">Dodaj i modyfikuj oferty serwisu</p>
+                            <a href="{{ path('admin_offer_index', {'encodedName': service.encodedName}) }}" class="btn btn-light btn-sm w-75">Przejdź</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card option-card">
+                        <div class="card-header">
+                            <i class="fas fa-users me-2"></i> Pracownicy
+                        </div>
+                        <div class="card-body text-center">
+                            <p class="card-text">Zarządzaj pracownikami serwisu</p>
+                            <a href="{{ path('admin_employee_index', {'encodedName': service.encodedName}) }}" class="btn btn-light btn-sm w-75">Przejdź</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card option-card">
+                        <div class="card-header">
+                            <i class="fas fa-images me-2"></i> Zdjęcia
+                        </div>
+                        <div class="card-body text-center">
+                            <p class="card-text">Dodaj i usuwaj zdjęcia serwisu</p>
+                            <a href="{{ path('admin_service_image_index', {'encodedName': service.encodedName}) }}" class="btn btn-light btn-sm w-75">Przejdź</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="admin-section mt-5">
+            <div class="admin-section-header">
+                <h3 class="m-0"><i class="fas fa-edit me-2"></i>Edytuj Serwis</h3>
+            </div>
+            <div class="admin-section-body">
+                {{ form_start(form) }}
+                <ul class="nav nav-tabs" id="serviceTabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="info-tab" data-bs-toggle="tab" data-bs-target="#info-content" type="button" role="tab" aria-controls="info-content" aria-selected="true">
+                            <i class="fas fa-info-circle me-2"></i>Informacje Podstawowe
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact-content" type="button" role="tab" aria-controls="contact-content" aria-selected="false">
+                            <i class="fas fa-address-card me-2"></i>Dane Kontaktowe
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="image-tab" data-bs-toggle="tab" data-bs-target="#image-content" type="button" role="tab" aria-controls="image-content" aria-selected="false">
+                            <i class="fas fa-image me-2"></i>Zdjęcie Główne
+                        </button>
+                    </li>
+                </ul>
+
+                <div class="tab-content" id="serviceTabsContent">
+                    <div class="tab-pane fade show active" id="info-content" role="tabpanel" aria-labelledby="info-tab">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                {{ form_label(form.name) }}
+                                {{ form_widget(form.name) }}
+                                {{ form_errors(form.name) }}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                {{ form_label(form.serviceCategory) }}
+                                {{ form_widget(form.serviceCategory) }}
+                                {{ form_errors(form.serviceCategory) }}
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            {{ form_label(form.description) }}
+                            {{ form_widget(form.description) }}
+                            {{ form_errors(form.description) }}
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade" id="contact-content" role="tabpanel" aria-labelledby="contact-tab">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                {{ form_label(form.city) }}
+                                {{ form_widget(form.city) }}
+                                {{ form_errors(form.city) }}
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                {{ form_label(form.postalCode) }}
+                                {{ form_widget(form.postalCode) }}
+                                {{ form_errors(form.postalCode) }}
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            {{ form_label(form.street) }}
+                            {{ form_widget(form.street) }}
+                            {{ form_errors(form.street) }}
+                        </div>
+                        <div class="mb-3">
+                            {{ form_label(form.phoneNumber) }}
+                            {{ form_widget(form.phoneNumber) }}
+                            {{ form_errors(form.phoneNumber) }}
+                        </div>
+                    </div>
+
+                    <div class="tab-pane fade" id="image-content" role="tabpanel" aria-labelledby="image-tab">
+                        <div class="mb-3">
+                            {{ form_label(form.imageUrl) }}
+                            {{ form_widget(form.imageUrl) }}
+                            {{ form_errors(form.imageUrl) }}
+                        </div>
+
+                        <div id="image-preview-container" class="text-center mt-4 {% if not service.imageUrl %}d-none{% endif %}">
+                            <h5 class="mb-3">Podgląd obrazu:</h5>
+                            <img src="{{ service.imageUrl }}" alt="Podgląd obrazu" id="image-preview" class="preview-image">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between mt-4">
+                    <a href="{{ path('admin_service_index') }}" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-2"></i>Powrót
+                    </a>
+                    <button type="submit" class="btn btn-dark">
+                        <i class="fas fa-save me-2"></i>Zapisz zmiany
+                    </button>
+                </div>
+                {{ form_end(form) }}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        const imageConfig = {
+            inputId: '{{ form.imageUrl.vars.id }}',
+            previewContainerId: 'image-preview-container',
+            currentImageUrl: '{{ service.imageUrl }}'
+        };
+        const validationConfig = {
+            infoTabId: 'info-tab',
+            contactTabId: 'contact-tab',
+            imageTabId: 'image-tab'
+        };
+    </script>
+    <script src="{{ asset('js/admin/service/edit.js') }}"></script>
+{% endblock %}

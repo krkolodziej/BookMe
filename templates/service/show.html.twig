@@ -1,0 +1,146 @@
+{% extends 'base.html.twig' %}
+
+
+{% block body %}
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="service-details position-relative">
+                    <div class="details-swiper-container">
+                        <div class="swiper-wrapper">
+                            <div class="swiper-slide">
+                                <img src="{{ service.imageUrl }}" alt="Service image">
+                            </div>
+                            {% for image in serviceImages %}
+                                <div class="swiper-slide">
+                                    <img src="{{ asset(image.url) }}" alt="Service image">
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <div class="swiper-button-prev details-swiper-button-prev"></div>
+                        <div class="swiper-button-next details-swiper-button-next"></div>
+                        <div class="swiper-pagination details-swiper-pagination"></div>
+
+                        <!-- Rating card -->
+                        {% if averageRating > 0 %}
+                            <div class="card-rating">
+                                <div class="rating">{{ averageRating }} / 5</div>
+                                <span class="opinions-count">({{ opinionsCount }} opinii)</span>
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <h2 class="mt-4">{{ service.name }}</h2>
+                    <p class="text-secondary">{{ service.street }}, {{ service.postalCode }}, {{ service.city }}</p>
+
+                    <div class="services mt-5">
+                        <h4>Oferta</h4>
+                        {% for offer in service.offers %}
+                            <div class="service-form mb-3 p-3 border rounded">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <p class="offer-name h5 mb-1">{{ offer.name }}</p>
+                                        <small class="text-secondary">{{ offer.duration }} min</small>
+                                    </div>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <span class="offer-price mb-0">{{ offer.price }} zł</span>
+                                        {% if not isEmployee is defined or not isEmployee %}
+                                            <a href="{{ path('booking_create', {
+                                                'serviceEncodedName': service.encodedName,
+                                                'offerEncodedName': offer.encodedName
+                                            }) }}"
+                                               class="btn btn-dark btn-sm">Umów się</a>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+
+                    <!-- Reviews section -->
+                    {% if service.opinions|length > 0 %}
+                        <div class="reviews mt-5">
+                            <h4>Opinie</h4>
+                            <div class="d-flex justify-content-end mb-3">
+                                <div class="btn-group" role="group">
+                                    <button type="button" class="btn btn-outline-dark page-size-button">5</button>
+                                    <button type="button" class="btn btn-outline-dark page-size-button">10</button>
+                                    <button type="button" class="btn btn-outline-dark page-size-button">15</button>
+                                </div>
+                            </div>
+                            <div class="opinions row"></div>
+                            <nav class="mt-4">
+                                <ul class="pagination justify-content-center"></ul>
+                            </nav>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-md-4">
+                <div class="sidebar-sticky">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5>O nas</h5>
+                            <p>{{ service.description }}</p>
+
+                            <hr>
+
+                            <h5>Kontakt</h5>
+                            <p class="mb-0">
+                                <i class="fa-solid fa-phone me-2"></i>
+                                <span>{{ service.phoneNumber }}</span>
+                            </p>
+
+                            <hr>
+
+                            <h5>Godziny otwarcia</h5>
+                            <div class="row">
+                                {% for hour in service.openingHours %}
+                                    <div class="col-6">
+                                        <strong>{{ hour.dayOfWeek }}</strong>
+                                    </div>
+                                    <div class="col-6">
+                                        {% if hour.closed %}
+                                            <span class="text-danger">Zamknięte</span>
+                                        {% else %}
+                                            {{ hour.openingTime|date('H:i') }} - {{ hour.closingTime|date('H:i') }}
+                                        {% endif %}
+                                    </div>
+                                {% endfor %}
+                            </div>
+
+                            <hr>
+
+                            <h5>Pracownicy</h5>
+                            <div class="row">
+                                {% for employee in service.employees %}
+                                    <a href="{{ path('app_employee_show', {'id': employee.id}) }}" class="col-6 text-center mb-3 text-decoration-none text-dark employee-wrapper">
+                                        <img class="rounded-circle employee-avatar"
+                                             src="{{ employee.user.avatarUrl ?: 'https://sbcf.fr/wp-content/uploads/2018/03/sbcf-default-avatar.png' }}"
+                                             alt="{{ employee.user.firstName }}">
+                                        <p class="mb-0">{{ employee.user.firstName }} {{ employee.user.lastName }}</p>
+                                    </a>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Marker element to detect bottom of main content -->
+    <div id="content-end" class="d-none"></div>
+
+    <div class="d-none service-encoded-name">{{ service.encodedName }}</div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.js"></script>
+    {{ encore_entry_script_tags('serviceDetails') }}
+    {{ encore_entry_script_tags('opinions') }}
+    <script src="{{ asset('js/service/sidebar.js') }}"></script>
+{% endblock %}

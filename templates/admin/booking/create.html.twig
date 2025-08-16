@@ -1,0 +1,167 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Dodaj Nową Wizytę - {{ service.name }}{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('styles/admin/booking/styles.css') }}">
+    <link rel="stylesheet" href="{{ asset('styles/admin/booking/calendar.css') }}">
+{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="alert alert-{{ label }} alert-dismissible fade show">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endfor %}
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2><i class="fas fa-plus-circle me-2"></i>Dodaj Nową Wizytę</h2>
+            <div>
+                <a href="{{ path('admin_service_bookings', {'encodedName': service.encodedName}) }}" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-2"></i>Powrót do Listy Wizyt
+                </a>
+            </div>
+        </div>
+
+        <div class="booking-form-container">
+            <div class="form-header">
+                <h4 class="mb-0">Nowa Wizyta - {{ service.name }}</h4>
+            </div>
+
+            <div class="step-indicator">
+                <div class="step active" data-step="1">
+                    <div class="step-number">1</div>
+                    <div class="step-title">Dane podstawowe</div>
+                </div>
+                <div class="step" data-step="2">
+                    <div class="step-number">2</div>
+                    <div class="step-title">Wybór terminu</div>
+                </div>
+                <div class="step" data-step="3">
+                    <div class="step-number">3</div>
+                    <div class="step-title">Potwierdzenie</div>
+                </div>
+            </div>
+
+            {{ form_start(form) }}
+            <div class="booking-step active" data-step="1">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        {{ form_label(form.user) }}
+                        {{ form_widget(form.user) }}
+                        {{ form_errors(form.user) }}
+                    </div>
+                    <div class="col-md-6">
+                        {{ form_label(form.employee) }}
+                        {{ form_widget(form.employee) }}
+                        {{ form_errors(form.employee) }}
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    {{ form_label(form.offer) }}
+                    {{ form_widget(form.offer) }}
+                    {{ form_errors(form.offer) }}
+                </div>
+
+                <div class="d-flex justify-content-between mt-4">
+                    <a href="{{ path('admin_service_bookings', {'encodedName': service.encodedName}) }}" class="btn btn-outline-secondary">
+                        Anuluj
+                    </a>
+                    <button type="button" class="btn btn-dark next-step" data-step="1">
+                        Dalej <i class="fas fa-arrow-right ms-2"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="booking-step" data-step="2">
+                <div class="mb-3">
+                    {{ form_label(form.bookingDate) }}
+                    {{ form_widget(form.bookingDate) }}
+                    {{ form_errors(form.bookingDate) }}
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Dostępne terminy</label>
+                    <div class="loading-spinner">
+                        <div class="spinner-border text-dark" role="status">
+                            <span class="visually-hidden">Ładowanie...</span>
+                        </div>
+                        <p class="mt-2">Ładowanie dostępnych terminów...</p>
+                    </div>
+                    <div class="slots-container">
+                        <div class="no-slots-message">
+                            <p>Wybierz datę, pracownika i usługę, aby zobaczyć dostępne terminy.</p>
+                        </div>
+                        <div class="time-slots"></div>
+                    </div>
+                </div>
+
+                {{ form_widget(form.startTime) }}
+
+                <div class="d-flex justify-content-between mt-4">
+                    <button type="button" class="btn btn-outline-secondary prev-step" data-step="2">
+                        <i class="fas fa-arrow-left me-2"></i>Wstecz
+                    </button>
+                    <button type="button" class="btn btn-dark next-step" data-step="2" disabled>
+                        Dalej <i class="fas fa-arrow-right ms-2"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="booking-step" data-step="3">
+                <div class="card mb-4">
+                    <div class="card-header bg-dark text-white">
+                        <h5 class="mb-0">Podsumowanie rezerwacji</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p><strong>Klient:</strong> <span id="summary-client"></span></p>
+                                <p><strong>Usługa:</strong> <span id="summary-offer"></span></p>
+                                <p><strong>Pracownik:</strong> <span id="summary-employee"></span></p>
+                            </div>
+                            <div class="col-md-6">
+                                <p><strong>Data:</strong> <span id="summary-date"></span></p>
+                                <p><strong>Godzina:</strong> <span id="summary-time"></span></p>
+                                <p><strong>Czas trwania:</strong> <span id="summary-duration"></span> minut</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between mt-4">
+                    <button type="button" class="btn btn-outline-secondary prev-step" data-step="3">
+                        <i class="fas fa-arrow-left me-2"></i>Wstecz
+                    </button>
+                    <button type="submit" class="btn btn-dark">
+                        <i class="fas fa-check me-2"></i>Potwierdź rezerwację
+                    </button>
+                </div>
+            </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('js/admin/booking/create.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            new BookingForm({
+                userSelectId: '{{ form.user.vars.id }}',
+                offerSelectId: '{{ form.offer.vars.id }}',
+                employeeSelectId: '{{ form.employee.vars.id }}',
+                dateInputId: '{{ form.bookingDate.vars.id }}',
+                startTimeInputId: '{{ form.startTime.vars.id }}',
+                slotsUrl: '{{ path('admin_service_bookings_slots', {'encodedName': service.encodedName}) }}'
+            });
+        });
+    </script>
+{% endblock %}

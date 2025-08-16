@@ -1,0 +1,61 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Wyniki wyszukiwania{% endblock %}
+
+{% block body %}
+    <div class="container mt-5">
+        <h4 class="mb-5">
+            Wyniki dla:
+            {% if searchTerm %}
+                "{{ searchTerm }}"
+            {% endif %}
+            {% if searchTerm and city %}
+                w
+            {% endif %}
+            {% if city %}
+                "{{ city }}"
+            {% endif %}
+        </h4>
+
+        {# Lista usług #}
+        <div class="row mt-5">
+            {% if services|length > 0 %}
+                {% for service in services %}
+                    <div class="col-md-6 mb-4">
+                        <div class="card service-card h-100">
+                            <div class="position-absolute top-0 end-0 m-2 p-2 bg-white rounded shadow-sm">
+                                <div class="fw-bold">{{ service.averageRating > 0 ? service.averageRating|number_format(1) : 'N/A' }}</div>
+                                <small>{{ service.opinionsCount > 0 ? service.opinionsCount ~ ' opinii' : 'Brak opinii' }}</small>
+                            </div>
+
+                            <img
+                                    src="{{ service.imageUrl }}"
+                                    class="card-img-top service-image"
+                                    alt="{{ service.name }}"
+                                    onerror="this.src='https://fastly.picsum.photos/id/40/640/480.jpg?hmac=g_iGJ4xMON_SqGk0lEb_9nIhJG1-H783dsL3S5QQw2g'"
+                            >
+
+                            <div class="card-body">
+                                <h5 class="card-title">{{ service.name }}</h5>
+                                <p class="card-text text-secondary">
+                                    {{ service.street }}, {{ service.postalCode }}, {{ service.city }}
+                                </p>
+                                <p class="card-text text-secondary">
+                                    tel. {{ service.phoneNumber }}
+                                </p>
+                                <a href="{{ path('service_show', {'encodedName': service.encodedName}) }}"
+                                   class="btn btn-outline-secondary">
+                                    Więcej
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="col-12 text-center text-muted">
+                    <p>Nie znaleziono żadnych serwisów dla podanych kryteriów.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

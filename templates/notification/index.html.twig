@@ -1,0 +1,275 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Powiadomienia - BookMe{% endblock %}
+
+{% block body %}
+<div class="row justify-content-center">
+    <div class="col-lg-8 col-xl-7">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="mb-0 fw-bold text-dark">
+                <i class="fas fa-bell me-2 text-primary"></i>
+                Powiadomienia
+            </h2>
+            {% if notifications|length > 0 %}
+                <button id="markAllReadBtn" class="btn btn-outline-dark btn-sm">
+                    <i class="fas fa-check-double me-1"></i>
+                    Oznacz wszystkie jako przeczytane
+                </button>
+            {% endif %}
+        </div>
+
+        {% if notifications|length == 0 %}
+            <div class="text-center py-5">
+                <div class="mb-4">
+                    <i class="fas fa-bell-slash fa-4x text-muted opacity-50"></i>
+                </div>
+                <h4 class="text-muted mb-2">Brak powiadomień</h4>
+                <p class="text-muted">Nie masz jeszcze żadnych powiadomień.</p>
+            </div>
+        {% else %}
+            <div class="notifications-container">
+                {% for notification in notifications %}
+                    <div class="notification-item card border-0 shadow-sm mb-3 
+                        {% if not notification.isRead %}bg-light{% else %}bg-white{% endif %}" 
+                        data-notification-id="{{ notification.id }}">
+                        <div class="card-body p-4">
+                            <div class="d-flex align-items-start">
+                                <div class="notification-icon me-3 mt-1">
+                                    <div class="rounded-circle bg-primary bg-opacity-10 d-flex align-items-center justify-content-center" 
+                                         style="width: 40px; height: 40px;">
+                                        <i class="fas fa-info-circle text-primary"></i>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex-grow-1">
+                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                        <h6 class="mb-0 fw-semibold text-dark">
+                                            {% if not notification.isRead %}
+                                                <span class="badge bg-primary rounded-pill me-2" style="font-size: 0.6rem;">NOWE</span>
+                                            {% endif %}
+                                            Powiadomienie
+                                        </h6>
+                                        <small class="text-muted">{{ notification.createdAt|date('d.m.Y H:i') }}</small>
+                                    </div>
+                                    
+                                    <p class="mb-2 text-dark">{{ notification.message }}</p>
+                                    
+                                    {% if not notification.isRead %}
+                                        <button class="btn btn-sm btn-outline-primary mark-read-btn" 
+                                                data-notification-id="{{ notification.id }}">
+                                            <i class="fas fa-eye me-1"></i>
+                                            Oznacz jako przeczytane
+                                        </button>
+                                    {% else %}
+                                        <span class="text-success small">
+                                            <i class="fas fa-check-circle me-1"></i>
+                                            Przeczytane
+                                        </span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <!-- Pagination (jeśli potrzebna) -->
+            {% if notifications|length >= 20 %}
+                <nav aria-label="Nawigacja powiadomień" class="mt-4">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item">
+                            <a class="page-link text-dark" href="#" aria-label="Poprzednia">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                        <li class="page-item active">
+                            <a class="page-link bg-dark border-dark" href="#">1</a>
+                        </li>
+                        <li class="page-item">
+                            <a class="page-link text-dark" href="#" aria-label="Następna">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            {% endif %}
+        {% endif %}
+    </div>
+</div>
+
+<!-- Toast dla komunikatów -->
+<div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div id="successToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header bg-success text-white">
+            <i class="fas fa-check-circle me-2"></i>
+            <strong class="me-auto">Sukces</strong>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Zamknij"></button>
+        </div>
+        <div class="toast-body">
+            Powiadomienie zostało oznaczone jako przeczytane.
+        </div>
+    </div>
+</div>
+
+<style>
+.notification-item {
+    transition: all 0.3s ease;
+    border-left: 4px solid transparent !important;
+}
+
+.notification-item:not(.bg-white) {
+    border-left-color: #0d6efd !important;
+}
+
+.notification-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1) !important;
+}
+
+.notification-icon {
+    flex-shrink: 0;
+}
+
+.mark-read-btn {
+    font-size: 0.875rem;
+    padding: 0.375rem 0.75rem;
+}
+
+.badge {
+    font-size: 0.6rem !important;
+}
+
+@media (max-width: 768px) {
+    .notification-item .card-body {
+        padding: 1rem !important;
+    }
+    
+    .notification-icon {
+        margin-right: 0.75rem !important;
+    }
+    
+    .notification-icon > div {
+        width: 35px !important;
+        height: 35px !important;
+    }
+}
+</style>
+{% endblock %}
+
+{% block additional_javascripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Oznaczanie pojedynczego powiadomienia jako przeczytane
+    document.querySelectorAll('.mark-read-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const notificationId = this.getAttribute('data-notification-id');
+            markAsRead(notificationId, this);
+        });
+    });
+
+    // Oznaczanie wszystkich powiadomień jako przeczytane
+    const markAllBtn = document.getElementById('markAllReadBtn');
+    if (markAllBtn) {
+        markAllBtn.addEventListener('click', function() {
+            markAllAsRead();
+        });
+    }
+
+    function markAsRead(notificationId, button) {
+        fetch(`/notifications/mark-read/${notificationId}`, {
+            method: 'POST',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const notificationItem = button.closest('.notification-item');
+                notificationItem.classList.remove('bg-light');
+                notificationItem.classList.add('bg-white');
+                
+                // Usuń badge "NOWE"
+                const badge = notificationItem.querySelector('.badge');
+                if (badge) badge.remove();
+                
+                // Zamień przycisk na status "przeczytane"
+                button.outerHTML = `
+                    <span class="text-success small">
+                        <i class="fas fa-check-circle me-1"></i>
+                        Przeczytane
+                    </span>
+                `;
+                
+                showToast('Powiadomienie zostało oznaczone jako przeczytane.');
+                
+                // Użyj globalnej funkcji updateNotificationCounter jeśli istnieje
+                if (typeof window.updateNotificationCounter === 'function') {
+                    window.updateNotificationCounter();
+                }
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+
+    function markAllAsRead() {
+        fetch('/notifications/mark-all-read', {
+            method: 'POST',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Zaktualizuj wszystkie powiadomienia
+                document.querySelectorAll('.notification-item.bg-light').forEach(item => {
+                    item.classList.remove('bg-light');
+                    item.classList.add('bg-white');
+                    
+                    const badge = item.querySelector('.badge');
+                    if (badge) badge.remove();
+                    
+                    const button = item.querySelector('.mark-read-btn');
+                    if (button) {
+                        button.outerHTML = `
+                            <span class="text-success small">
+                                <i class="fas fa-check-circle me-1"></i>
+                                Przeczytane
+                            </span>
+                        `;
+                    }
+                });
+                
+                // Ukryj przycisk "Oznacz wszystkie"
+                const markAllBtn = document.getElementById('markAllReadBtn');
+                if (markAllBtn) markAllBtn.style.display = 'none';
+                
+                showToast(`Wszystkie powiadomienia (${data.count}) zostały oznaczone jako przeczytane.`);
+                
+                // Użyj globalnej funkcji updateNotificationCounter jeśli istnieje
+                if (typeof window.updateNotificationCounter === 'function') {
+                    window.updateNotificationCounter();
+                }
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+
+    function showToast(message) {
+        const toast = document.getElementById('successToast');
+        const toastBody = toast.querySelector('.toast-body');
+        toastBody.textContent = message;
+        
+        const bsToast = new bootstrap.Toast(toast);
+        bsToast.show();
+    }
+});
+</script>
+{% endblock %}

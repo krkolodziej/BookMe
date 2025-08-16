@@ -1,0 +1,104 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('styles/admin/openinghours/styles.css') }}">
+{% endblock %}
+
+{% block title %}Zarządzanie Godzinami Otwarcia - {{ service.name }}{% endblock %}
+
+{% block body %}
+    <div class="container mt-5 mb-5">
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="alert alert-{{ label }} alert-dismissible fade show">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endfor %}
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Zarządzanie Godzinami Otwarcia - {{ service.name }}</h2>
+            <a href="{{ path('admin_service_edit', {'encodedName': encodedName}) }}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-2"></i>Powrót do Serwisu
+            </a>
+        </div>
+
+        <div class="admin-section">
+            <div class="admin-section-header d-flex justify-content-between align-items-center">
+                <h3 class="m-0"><i class="fas fa-clock me-2"></i>Godziny Otwarcia</h3>
+                {% if availableDays|length > 0 %}
+                    <a href="{{ path('admin_opening_hours_new', {'encodedName': encodedName}) }}" class="btn btn-light btn-sm">
+                        <i class="fas fa-plus me-1"></i>Dodaj Godziny Otwarcia
+                    </a>
+                {% endif %}
+            </div>
+
+            <div class="admin-section-body">
+                {% if openingHours|length > 0 %}
+                    <div class="table-responsive">
+                        <table class="table-custom">
+                            <thead>
+                            <tr>
+                                <th style="width: 25%;">Dzień tygodnia</th>
+                                <th style="width: 50%;">Godziny otwarcia</th>
+                                <th style="width: 25%;">Akcje</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for hour in openingHours %}
+                                <tr>
+                                    <td>
+                                        <span class="day-badge">{{ hour.dayOfWeek }}</span>
+                                    </td>
+                                    <td>
+                                        {% if hour.closed %}
+                                            <span class="closed-badge">
+                                                    <i class="fas fa-door-closed me-1"></i>Zamknięte
+                                                </span>
+                                        {% else %}
+                                            <span class="hours-display">
+                                                    <i class="fas fa-door-open text-success me-1"></i>
+                                                    {{ hour.openingTime|date('H:i') }} - {{ hour.closingTime|date('H:i') }}
+                                                </span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <a href="{{ path('admin_opening_hours_edit', {'encodedName': encodedName, 'id': hour.id}) }}" class="btn btn-outline-dark btn-sm action-btn" title="Edytuj">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <form action="{{ path('admin_opening_hours_delete', {'encodedName': encodedName, 'id': hour.id}) }}" method="post" onsubmit="return confirm('Czy na pewno chcesz usunąć godziny otwarcia dla {{ hour.dayOfWeek }}?');">
+                                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ hour.id) }}">
+                                                <button type="submit" class="btn btn-danger btn-sm action-btn" title="Usuń">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="no-hours">
+                        <p><i class="fas fa-info-circle me-2"></i>Brak zdefiniowanych godzin otwarcia</p>
+                        {% if availableDays|length > 0 %}
+                            <a href="{{ path('admin_opening_hours_new', {'encodedName': encodedName}) }}" class="btn btn-dark mt-3">
+                                <i class="fas fa-plus me-2"></i>Dodaj Godziny Otwarcia
+                            </a>
+                        {% endif %}
+                    </div>
+                {% endif %}
+
+                {% if availableDays|length == 0 and openingHours|length > 0 %}
+                    <div class="alert alert-info mt-4">
+                        <i class="fas fa-info-circle me-2"></i>Wszystkie dni tygodnia mają już zdefiniowane godziny otwarcia. Możesz edytować lub usunąć istniejące godziny.
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

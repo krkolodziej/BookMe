@@ -1,0 +1,10 @@
+twig:
+    file_name_pattern: '*.twig'
+    number_format:
+        decimals: 2
+        decimal_point: ','
+        thousands_separator: ' '
+
+when@test:
+    twig:
+        strict_variables: true

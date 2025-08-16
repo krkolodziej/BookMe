@@ -1,0 +1,154 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Zarządzanie Pracownikami - {{ service.name }}{% endblock %}
+{% block stylesheets %}
+    {{ parent() }}
+    <link rel="stylesheet" href="{{ asset('styles/admin/employee/styles.css') }}">
+{% endblock %}
+
+{% block body %}
+    <div class="container mt-5 mb-5">
+        {% for label, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="alert alert-{{ label }} alert-dismissible fade show">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endfor %}
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Zarządzanie Pracownikami - {{ service.name }}</h2>
+            <a href="{{ path('admin_service_edit', {'encodedName': encodedName}) }}" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-2"></i>Powrót do Serwisu
+            </a>
+        </div>
+
+        <div class="admin-section">
+            <div class="admin-section-header d-flex justify-content-between align-items-center">
+                <h3 class="m-0"><i class="fas fa-users me-2"></i>Pracownicy Serwisu</h3>
+                <a href="{{ path('admin_employee_create', {'encodedName': encodedName}) }}" class="btn btn-light btn-sm">
+                    <i class="fas fa-plus me-1"></i>Dodaj Pracownika
+                </a>
+            </div>
+
+            <div class="admin-section-body">
+                {% if employees|length > 0 %}
+                    <div class="filters-bar">
+                        <div class="search-box">
+                            <i class="fas fa-search search-icon"></i>
+                            <input type="text" id="employeeSearch" class="form-control search-input" placeholder="Szukaj...">
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <span class="me-2">Łącznie pracowników: {{ total }}</span>
+                        </div>
+                    </div>
+
+                    <div class="table-responsive">
+                        <table class="table-custom" id="employeeTable">
+                            <thead>
+                            <tr>
+                                <th style="width: 35%;">
+                                    Imię i Nazwisko
+                                    <a href="{{ path('admin_employee_index', {'encodedName': encodedName, 'sort': 'lastName', 'direction': direction == 'asc' and sort == 'lastName' ? 'desc' : 'asc'}) }}" class="sort-link">
+                                        <i class="fas fa-sort sort-icon"></i>
+                                    </a>
+                                </th>
+                                <th style="width: 30%;">
+                                    Email
+                                    <a href="{{ path('admin_employee_index', {'encodedName': encodedName, 'sort': 'email', 'direction': direction == 'asc' and sort == 'email' ? 'desc' : 'asc'}) }}" class="sort-link">
+                                        <i class="fas fa-sort sort-icon"></i>
+                                    </a>
+                                </th>
+                                <th style="width: 15%;">Płeć</th>
+                                <th style="width: 20%;">Akcje</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for employee in employees %}
+                                <tr>
+                                    <td class="text-start">
+                                        <div class="employee-name">
+                                            <img src="{{ employee.avatarUrl ?: 'https://via.placeholder.com/40' }}" alt="{{ employee.fullName }}" class="employee-avatar">
+                                            <span>{{ employee.firstName }} {{ employee.lastName }}</span>
+                                        </div>
+                                    </td>
+                                    <td>{{ employee.email }}</td>
+                                    <td>
+                                        {% if employee.gender == 'male' %}
+                                            <i class="fas fa-mars gender-icon"></i> Mężczyzna
+                                        {% elseif employee.gender == 'female' %}
+                                            <i class="fas fa-venus gender-icon"></i> Kobieta
+                                        {% else %}
+                                            <i class="fas fa-genderless gender-icon"></i> Inna
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <a href="{{ path('admin_employee_edit', {'encodedName': encodedName, 'id': employee.id}) }}" class="btn btn-outline-dark btn-sm action-btn" title="Edytuj">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <form action="{{ path('admin_employee_delete', {'encodedName': encodedName, 'id': employee.id}) }}" method="post" onsubmit="return confirm('Czy na pewno chcesz usunąć tego pracownika?');">
+                                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ employee.id) }}">
+                                                <button type="submit" class="btn btn-danger btn-sm action-btn" title="Usuń">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    {% if totalPages > 1 %}
+                        <nav aria-label="Page navigation">
+                            <ul class="pagination">
+                                {% if currentPage > 1 %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="{{ path('admin_employee_index', {'encodedName': encodedName, 'page': currentPage - 1, 'sort': sort, 'direction': direction}) }}" aria-label="Previous">
+                                            <span aria-hidden="true">&laquo;</span>
+                                        </a>
+                                    </li>
+                                {% endif %}
+
+                                {% for i in 1..totalPages %}
+                                    <li class="page-item {{ currentPage == i ? 'active' : '' }}">
+                                        <a class="page-link" href="{{ path('admin_employee_index', {'encodedName': encodedName, 'page': i, 'sort': sort, 'direction': direction}) }}">{{ i }}</a>
+                                    </li>
+                                {% endfor %}
+
+                                {% if currentPage < totalPages %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="{{ path('admin_employee_index', {'encodedName': encodedName, 'page': currentPage + 1, 'sort': sort, 'direction': direction}) }}" aria-label="Next">
+                                            <span aria-hidden="true">&raquo;</span>
+                                        </a>
+                                    </li>
+                                {% endif %}
+                            </ul>
+                        </nav>
+                    {% endif %}
+                {% else %}
+                    <div class="no-employees">
+                        <p><i class="fas fa-info-circle me-2"></i>Brak pracowników dla tego serwisu</p>
+                        <a href="{{ path('admin_employee_create', {'encodedName': encodedName}) }}" class="btn btn-dark mt-3">
+                            <i class="fas fa-plus me-2"></i>Dodaj Pierwszego Pracownika
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        const tableConfig = {
+            tableId: 'employeeTable',
+            searchInputId: 'employeeSearch'
+        };
+    </script>
+    <script src="{{ asset('js/admin/employee/index.js') }}"></script>
+{% endblock %}

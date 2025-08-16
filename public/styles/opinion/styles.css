@@ -1,0 +1,78 @@
+
+.card {
+    border-radius: 10px;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    transition: all 0.3s;
+}
+
+.card:hover {
+    box-shadow: 0 0.7rem 1.5rem rgba(0, 0, 0, 0.2);
+}
+
+
+.btn-dark {
+    background-color: #212529;
+    border: none;
+    padding: 0.6rem 1.5rem;
+    border-radius: 6px;
+    font-weight: 500;
+    transition: all 0.3s;
+}
+
+.btn-dark:hover {
+    background-color: #000;
+    transform: translateY(-2px);
+    box-shadow: 0 0.3rem 0.5rem rgba(0, 0, 0, 0.2);
+}
+
+
+.pure-stars-rating {
+    margin-bottom: 20px;
+}
+
+.pure-stars-rating .rating-label {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 10px;
+}
+
+.pure-stars-rating .stars-container {
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: flex-start;
+    margin-bottom: 5px;
+}
+
+.pure-stars-rating .star {
+    cursor: pointer;
+    font-size: 2.4rem;
+    padding: 0 5px;
+    color: #d4d4d4;
+    transition: all 0.2s ease;
+}
+
+.pure-stars-rating .star:hover,
+.pure-stars-rating .star:hover ~ .star,
+.pure-stars-rating .star.active,
+.pure-stars-rating .star.active ~ .star {
+    color: #FFD700;
+    transform: scale(1.1);
+}
+
+.rating-description {
+    font-size: 0.9rem;
+    color: #666;
+    padding-left: 5px;
+    margin-top: 5px;
+}
+
+
+@keyframes star-pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
+
+.pure-stars-rating .star.selected {
+    animation: star-pulse 0.3s ease-in-out;
+}
