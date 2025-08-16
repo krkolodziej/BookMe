@@ -1,0 +1,18 @@
+[phases.setup]
+nixPkgs = ["php82", "nginx", "nodejs_18", "npm-9_x"]
+nixLibs = ["libmysqlclient"]
+nixOverlays = ["https://github.com/railwayapp/nix-npm-overlay/archive/main.tar.gz"]
+
+[phases.install]
+cmds = [
+    "mkdir -p /var/log/nginx",
+    "mkdir -p /var/cache/nginx", 
+    "composer install --ignore-platform-reqs --no-dev --optimize-autoloader",
+    "npm ci"
+]
+
+[phases.build]
+cmds = ["npm run build"]
+
+[start]
+cmd = "vendor/bin/heroku-php-apache2 public/"
