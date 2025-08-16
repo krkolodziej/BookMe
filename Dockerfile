@@ -40,10 +40,9 @@ RUN mkdir -p var/cache var/log && \
     chown -R www-data:www-data var && \
     chmod -R 775 var
 
-# Clear cache and setup database (before removing dev dependencies)
+# Clear cache and run migrations (before removing dev dependencies)
 RUN php bin/console cache:clear --env=prod --no-debug && \
     php bin/console cache:warmup --env=prod && \
-    php bin/console doctrine:database:create --if-not-exists --env=prod && \
     php bin/console doctrine:migrations:migrate --no-interaction --env=prod
 
 # Now remove dev dependencies
