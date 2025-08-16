@@ -43,8 +43,9 @@ RUN mkdir -p var/cache var/log && \
 # Now remove dev dependencies first
 RUN COMPOSER_ALLOW_SUPERUSER=1 composer install --no-dev --optimize-autoloader --no-interaction
 
-# Clear cache and run migrations after removing dev dependencies
-RUN php bin/console cache:clear --env=prod --no-debug && \
+# Remove any existing cache and ensure clean cache directory
+RUN rm -rf var/cache/* && \
+    php bin/console cache:clear --env=prod --no-debug && \
     php bin/console cache:warmup --env=prod && \
     php bin/console doctrine:migrations:migrate --no-interaction --env=prod
 
