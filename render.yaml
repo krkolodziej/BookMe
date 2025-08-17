@@ -3,7 +3,7 @@ services:
     name: bookme-app
     env: docker
     plan: free
-    buildCommand: php bin/console doctrine:fixtures:load --no-interaction --env=prod
+    buildCommand: composer install --no-dev --optimize-autoloader && php bin/console doctrine:fixtures:load --no-interaction --env=prod
     envVars:
       - key: APP_ENV
         value: prod
