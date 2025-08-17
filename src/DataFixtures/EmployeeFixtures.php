@@ -29,13 +29,15 @@ class EmployeeFixtures extends Fixture implements DependentFixtureInterface
     {
         $faker = Factory::create('pl_PL');
         $defaultPassword = 'zaq1@WSX';
-        $batchSize = 20;
-        $count = 0;
 
-        $serviceIds = $manager->createQuery('SELECT s.id FROM App\Entity\Service s')->getResult();
-        foreach ($serviceIds as $serviceData) {
-            $service = $manager->find(Service::class, $serviceData['id']);
-
+        // Get all services directly from repository to avoid proxy issues
+        $services = $manager->getRepository(Service::class)->findAll();
+        
+        if (empty($services)) {
+            return; // No services to create employees for
+        }
+        
+        foreach ($services as $service) {
             for ($i = 0; $i < 3; $i++) {
                 $gender = $faker->randomElement(['male', 'female']);
                 $firstName = $gender === 'male' ? $faker->firstNameMale : $faker->firstNameFemale;
@@ -62,17 +64,10 @@ class EmployeeFixtures extends Fixture implements DependentFixtureInterface
                 $employee->setService($service);
 
                 $manager->persist($employee);
-
-                if (++$count % $batchSize === 0) {
-                    $manager->flush();
-                    $manager->clear();
-                }
             }
         }
 
-        if ($count % $batchSize !== 0) {
-            $manager->flush();
-        }
+        $manager->flush();
     }
 
     private function getNextAvatar(string $gender): string
