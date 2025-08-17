@@ -93,7 +93,10 @@ class EmployeeFixtures extends Fixture implements DependentFixtureInterface
                 $this->avatarCache[$gender][] = $result['picture']['large'];
             }
         } catch (\Exception $e) {
-            $this->avatarCache[$gender] = array_fill(0, $count, 'default-avatar.jpg');
+            // Fallback to placeholder avatars if API fails
+            for ($i = 0; $i < $count; $i++) {
+                $this->avatarCache[$gender][] = "https://ui-avatars.com/api/?name=Employee&background=random&color=fff&size=200";
+            }
         }
     }
 

@@ -59,10 +59,14 @@ class UserFixtures extends Fixture
 
     private function getAvatarUrl(string $gender): string
     {
-        $client = HttpClient::create();
-        $response = $client->request('GET', "https://randomuser.me/api/?gender={$gender}");
-
-        $data = $response->toArray();
-        return $data['results'][0]['picture']['large'];
+        try {
+            $client = HttpClient::create();
+            $response = $client->request('GET', "https://randomuser.me/api/?gender={$gender}");
+            $data = $response->toArray();
+            return $data['results'][0]['picture']['large'];
+        } catch (\Exception $e) {
+            // Fallback to placeholder avatar if API fails
+            return "https://ui-avatars.com/api/?name=User&background=random&color=fff&size=200";
+        }
     }
 }
