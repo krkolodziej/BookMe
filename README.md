@@ -2,7 +2,7 @@
 
 BookMe to aplikacja webowa do zarządzania rezerwacjami usług zbudowana w oparciu o framework Symfony 7. System umożliwia kompleksowe zarządzanie procesem rezerwacji od wyboru usługi przez klienta do jej realizacji przez pracowników.
 
-## 🚀 Funkcjonalności
+## Funkcjonalności
 
 ### Dla Klientów
 - **Przeglądanie usług** - kategoryzowane usługi z opisami i zdjęciami
@@ -25,7 +25,7 @@ BookMe to aplikacja webowa do zarządzania rezerwacjami usług zbudowana w oparc
 - **Zarządzanie użytkownikami** - administracja kontami klientów
 - **System opinii** - moderacja komentarzy i ocen
 
-## 🛠 Technologie
+## Technologie
 
 - **Backend**: Symfony 7.0 (PHP 8.2+)
 - **Database**: Doctrine ORM z SQLite
@@ -35,14 +35,14 @@ BookMe to aplikacja webowa do zarządzania rezerwacjami usług zbudowana w oparc
 - **Testing**: PHPUnit 11.5
 - **Security**: Symfony Security Bundle z autentykacją formularzową
 
-## 📋 Wymagania Systemowe
+## Wymagania Systemowe
 
 - PHP 8.2 lub wyższy
 - Composer
 - Node.js i npm
 - SQLite (domyślnie) lub MySQL/PostgreSQL
 
-## 🔧 Instalacja
+## Instalacja
 
 ### 1. Klonowanie repozytorium
 ```bash
@@ -103,7 +103,7 @@ php bin/console server:run
 
 Aplikacja będzie dostępna pod adresem `http://localhost:8000`
 
-## 🏗 Struktura Projektu
+## Struktura Projektu
 
 ```
 BookMe/
@@ -125,7 +125,7 @@ BookMe/
 └── var/                    # Pliki tymczasowe, logi, cache
 ```
 
-## 🎯 Główne Encje
+## Główne Encje
 
 - **User** - użytkownicy systemu (klienci, pracownicy, administratorzy)
 - **Service** - usługi oferowane przez firmę
@@ -137,14 +137,14 @@ BookMe/
 - **Notification** - powiadomienia systemowe
 - **OpeningHour** - godziny otwarcia
 
-## 🔐 System Autoryzacji
+## System Autoryzacji
 
 Aplikacja wykorzystuje wbudowany system bezpieczeństwa Symfony z następującymi rolami:
 - **ROLE_USER** - podstawowi użytkownicy (klienci)
 - **ROLE_EMPLOYEE** - pracownicy
 - **ROLE_ADMIN** - administratorzy systemu
 
-## 🧪 Testowanie
+## Testowanie
 
 ```bash
 # Uruchomienie wszystkich testów
@@ -158,7 +158,7 @@ php bin/phpunit tests/Service/
 php bin/phpunit --coverage-html coverage/
 ```
 
-## 🚀 Wdrożenie Produkcyjne
+## Wdrożenie Produkcyjne
 
 ### 1. Przygotowanie środowiska produkcyjnego
 ```bash
@@ -182,7 +182,7 @@ composer install --no-dev --optimize-autoloader
 composer dump-autoload --optimize --classmap-authoritative
 ```
 
-## 📝 API Endpointy
+## API Endpointy
 
 ### Główne trasy publiczne:
 - `GET /` - strona główna
@@ -203,7 +203,7 @@ composer dump-autoload --optimize --classmap-authoritative
 - Raporty i statystyki
 - Konfiguracja systemu
 
-## 🤝 Współpraca
+## Współpraca
 
 1. Fork repozytorium
 2. Utwórz branch dla nowej funkcjonalności (`git checkout -b feature/nazwa-funkcjonalności`)
@@ -211,14 +211,14 @@ composer dump-autoload --optimize --classmap-authoritative
 4. Push do brancha (`git push origin feature/nazwa-funkcjonalności`)
 5. Utwórz Pull Request
 
-## 📄 Licencja
+## Licencja
 
 Ten projekt jest własnością prywatną i nie posiada otwartej licencji.
 
-## 🐛 Zgłaszanie Błędów
+## Zgłaszanie Błędów
 
 Błędy i propozycje ulepszeń można zgłaszać przez system issue w repozytorium.
 
-## 📧 Kontakt
+## Kontakt
 
 W przypadku pytań technicznych skontaktuj się z zespołem deweloperskim.
