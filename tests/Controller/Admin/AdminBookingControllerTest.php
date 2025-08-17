@@ -2,6 +2,7 @@
 
 namespace App\Tests\Controller\Admin;
 
+use App\Constant\FlashMessages;
 use App\Controller\Admin\AdminBookingController;
 use App\Entity\Booking;
 use App\Entity\Employee;
@@ -92,7 +93,7 @@ class AdminBookingControllerTest extends TestCase
     public function testIndexWithServiceNotFound()
     {
         $encodedName = 'non-existent-service';
-        $exception = new NotFoundHttpException('Service not found.');
+        $exception = new NotFoundHttpException(FlashMessages::SERVICE_NOT_FOUND);
 
         $this->adminBookingService
             ->expects($this->once())
@@ -103,7 +104,7 @@ class AdminBookingControllerTest extends TestCase
         $this->adminBookingController
             ->expects($this->once())
             ->method('addFlash')
-            ->with('danger', 'Service not found.');
+            ->with('danger', FlashMessages::SERVICE_NOT_FOUND);
 
         $this->adminBookingController
             ->expects($this->once())
@@ -230,7 +231,7 @@ class AdminBookingControllerTest extends TestCase
         $this->adminBookingController
             ->expects($this->once())
             ->method('addFlash')
-            ->with('success', 'The visit has been successfully created.');
+            ->with('success', FlashMessages::VISIT_CREATED_SUCCESS);
 
         $this->adminBookingController
             ->expects($this->once())
@@ -328,7 +329,7 @@ class AdminBookingControllerTest extends TestCase
         $this->adminBookingController
             ->expects($this->once())
             ->method('addFlash')
-            ->with('success', 'The visit has been successfully deleted.');
+            ->with('success', FlashMessages::VISIT_DELETED_SUCCESS);
 
         $this->adminBookingController
             ->expects($this->once())
@@ -402,7 +403,7 @@ class AdminBookingControllerTest extends TestCase
         $service = $this->createMock(Service::class);
         
         $expectedResponse = [
-            'error' => 'Missing query parameters (offer, employee, date).'
+            'error' => FlashMessages::MISSING_PARAMETERS_OFFER_EMPLOYEE_DATE
         ];
 
         $request = $this->createMock(Request::class);
@@ -418,7 +419,7 @@ class AdminBookingControllerTest extends TestCase
             ->expects($this->once())
             ->method('json')
             ->with(
-                $this->equalTo(['error' => 'Missing query parameters (offer, employee, date).']),
+                $this->equalTo(['error' => FlashMessages::MISSING_PARAMETERS_OFFER_EMPLOYEE_DATE]),
                 $this->equalTo(Response::HTTP_BAD_REQUEST)
             )
             ->willReturn(new JsonResponse($expectedResponse, Response::HTTP_BAD_REQUEST));
@@ -431,10 +432,10 @@ class AdminBookingControllerTest extends TestCase
     public function testGetAvailableSlotsWithServiceNotFound()
     {
         $encodedName = 'non-existent-service';
-        $exception = new NotFoundHttpException('Service not found.');
+        $exception = new NotFoundHttpException(FlashMessages::SERVICE_NOT_FOUND);
         
         $expectedResponse = [
-            'error' => 'Service not found.'
+            'error' => FlashMessages::SERVICE_NOT_FOUND
         ];
 
         $request = $this->createMock(Request::class);
@@ -454,7 +455,7 @@ class AdminBookingControllerTest extends TestCase
             ->expects($this->once())
             ->method('json')
             ->with(
-                $this->equalTo(['error' => 'Service not found.']),
+                $this->equalTo(['error' => FlashMessages::SERVICE_NOT_FOUND]),
                 $this->equalTo(Response::HTTP_NOT_FOUND)
             )
             ->willReturn(new JsonResponse($expectedResponse, Response::HTTP_NOT_FOUND));

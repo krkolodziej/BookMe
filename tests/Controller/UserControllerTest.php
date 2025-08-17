@@ -2,6 +2,7 @@
 
 namespace App\Tests\Controller;
 
+use App\Constant\FlashMessages;
 use App\Controller\UserController;
 use App\Entity\User;
 use App\Form\UserType;
@@ -171,12 +172,12 @@ class UserControllerTest extends TestCase
         $this->userService->expects($this->once())
             ->method('deleteAccount')
             ->with($user, 'invalid_token')
-            ->willThrowException(new \Exception('Invalid token'));
+            ->willThrowException(new \Exception(FlashMessages::INVALID_TOKEN_EN));
             
         $this->userController
             ->expects($this->once())
             ->method('addFlash')
-            ->with('error', 'Invalid token');
+            ->with('error', FlashMessages::INVALID_TOKEN_EN);
         
         $this->userController
             ->expects($this->once())

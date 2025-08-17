@@ -46,7 +46,7 @@ class AvailabilityServiceTest extends TestCase
             ->method('findOneBy')
             ->with([
                 'service' => $service,
-                'dayOfWeek' => 'thursday'
+                'dayOfWeek' => 'Czwartek'
             ])
             ->willReturn(null);
 

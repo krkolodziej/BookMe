@@ -5,6 +5,7 @@ namespace App\Controller\Admin;
 use App\Entity\Service;
 use App\Form\ServiceType;
 use App\Service\AdminServiceService;
+use App\Service\AdminServiceCategoryService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,12 +17,14 @@ class AdminServiceController extends AbstractController
 {
     public function __construct(
         private readonly AdminServiceService $serviceService,
+        private readonly AdminServiceCategoryService $categoryService,
     ) {}
 
     #[Route('/service', name: 'admin_service_index')]
     public function index(Request $request): Response
     {
         $searchTerm = $request->query->get('searchTerm', '');
+        $categoryId = $request->query->get('category');
 
         if (!empty($searchTerm)) {
             $services = $this->serviceService->searchServicesByName($searchTerm);
@@ -29,8 +32,18 @@ class AdminServiceController extends AbstractController
             $services = $this->serviceService->getAllServices();
         }
 
+        // Filter by category if specified
+        if ($categoryId) {
+            $services = array_filter($services, function($service) use ($categoryId) {
+                return $service->getServiceCategory() && $service->getServiceCategory()->getId() == $categoryId;
+            });
+        }
+
+        $categories = $this->categoryService->getAllCategories();
+
         return $this->render('admin/service/index.html.twig', [
             'services' => $services,
+            'categories' => $categories,
             'searchTerm' => $searchTerm
         ]);
     }

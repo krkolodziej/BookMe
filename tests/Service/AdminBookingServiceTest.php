@@ -66,7 +66,7 @@ class AdminBookingServiceTest extends TestCase
             ->willReturn(null);
 
         $this->expectException(NotFoundHttpException::class);
-        $this->expectExceptionMessage('Service not found.');
+        $this->expectExceptionMessage('Serwis nie został znaleziony.');
 
         $this->adminBookingService->getServiceByEncodedName($encodedName);
     }
@@ -179,7 +179,7 @@ class AdminBookingServiceTest extends TestCase
             ->willReturn(null);
 
         $this->expectException(NotFoundHttpException::class);
-        $this->expectExceptionMessage('Visit not found.');
+        $this->expectExceptionMessage('Wizyta nie została znaleziona.');
 
         $this->adminBookingService->getBookingForEdit($bookingId, $service);
     }
@@ -205,7 +205,7 @@ class AdminBookingServiceTest extends TestCase
             ->willReturn($booking);
 
         $this->expectException(NotFoundHttpException::class);
-        $this->expectExceptionMessage('The visit does not belong to this service.');
+        $this->expectExceptionMessage('Ta wizyta nie należy do tego serwisu.');
 
         $this->adminBookingService->getBookingForEdit($bookingId, $service);
     }
@@ -298,7 +298,7 @@ class AdminBookingServiceTest extends TestCase
             ->willReturn(null);
 
         $this->expectException(BadRequestHttpException::class);
-        $this->expectExceptionMessage('Employee or offer not found.');
+        $this->expectExceptionMessage('Pracownik lub oferta nie została znaleziona.');
 
         $this->adminBookingService->getAvailableTimeSlots($service, $offerId, $employeeId, $date);
     }

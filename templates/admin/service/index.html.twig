@@ -40,9 +40,9 @@
                     <div class="filters-bar">
                         <div>
                             <span class="me-2">Kategorie:</span>
-                            <a href="{{ path('admin_service_index') }}" class="btn btn-sm {% if app.request.query.get('category') is null %}btn-dark{% else %}btn-outline-dark{% endif %} me-1">Wszystkie</a>
+                            <a href="{{ path('admin_service_index') }}" class="btn btn-sm {% if app.request.query.get('category') is null %}btn-dark{% else %}btn-outline-dark{% endif %} me-1 mb-1">Wszystkie</a>
                             {% for category in categories|default([]) %}
-                                <a href="{{ path('admin_service_index', {'category': category.id}) }}" class="btn btn-sm {% if app.request.query.get('category') == category.id %}btn-dark{% else %}btn-outline-dark{% endif %} me-1">{{ category.name }}</a>
+                                <a href="{{ path('admin_service_index', {'category': category.id}) }}" class="btn btn-sm {% if app.request.query.get('category') == category.id %}btn-dark{% else %}btn-outline-dark{% endif %} me-1 mb-1">{{ category.name }}</a>
                             {% endfor %}
                         </div>
                         <div>

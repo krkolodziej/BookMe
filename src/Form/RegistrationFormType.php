@@ -23,6 +23,7 @@ class RegistrationFormType extends AbstractType
     {
         $builder
             ->add('firstName', TextType::class, [
+                'label' => 'Imię',
                 'constraints' => [
                     new NotBlank(['message' => 'Imię jest wymagane.']),
                     new Length([
@@ -32,6 +33,7 @@ class RegistrationFormType extends AbstractType
                 ],
             ])
             ->add('lastName', TextType::class, [
+                'label' => 'Nazwisko',
                 'constraints' => [
                     new NotBlank(['message' => 'Nazwisko jest wymagane.']),
                     new Length([

@@ -2,6 +2,7 @@
 
 namespace App\Tests\Controller;
 
+use App\Constant\FlashMessages;
 use App\Controller\OpinionController;
 use App\Entity\Booking;
 use App\Entity\Opinion;
@@ -107,7 +108,7 @@ class OpinionControllerTest extends TestCase
         $this->opinionService
             ->expects($this->once())
             ->method('getServiceOpinions')
-            ->willThrowException(new NotFoundHttpException('Service not found'));
+            ->willThrowException(new NotFoundHttpException('Serwis nie został znaleziony.'));
 
         $response = $this->opinionController->getOpinions($request, $encodedName);
 
@@ -116,8 +117,8 @@ class OpinionControllerTest extends TestCase
         $responseData = json_decode($response->getContent(), true);
         $this->assertArrayHasKey('error', $responseData);
         $this->assertArrayHasKey('message', $responseData);
-        $this->assertEquals('Internal server error', $responseData['error']);
-        $this->assertEquals('Service not found', $responseData['message']);
+        $this->assertEquals(FlashMessages::INTERNAL_SERVER_ERROR, $responseData['error']);
+        $this->assertEquals('Serwis nie został znaleziony.', $responseData['message']);
     }
 
     public function testGetOpinionsWithGenericException()
@@ -140,7 +141,7 @@ class OpinionControllerTest extends TestCase
         $responseData = json_decode($response->getContent(), true);
         $this->assertArrayHasKey('error', $responseData);
         $this->assertArrayHasKey('message', $responseData);
-        $this->assertEquals('Internal server error', $responseData['error']);
+        $this->assertEquals(FlashMessages::INTERNAL_SERVER_ERROR, $responseData['error']);
         $this->assertEquals('Database error', $responseData['message']);
     }
 
@@ -154,12 +155,12 @@ class OpinionControllerTest extends TestCase
             ->expects($this->once())
             ->method('getBookingForOpinion')
             ->with($this->equalTo($bookingId))
-            ->willThrowException(new NotFoundHttpException('Booking not found.'));
+            ->willThrowException(new NotFoundHttpException(FlashMessages::BOOKING_NOT_FOUND));
 
         $this->opinionController
             ->expects($this->once())
             ->method('addFlash')
-            ->with('error', 'Booking not found.');
+            ->with('error', FlashMessages::BOOKING_NOT_FOUND);
 
         $this->opinionController
             ->expects($this->once())
@@ -273,7 +274,7 @@ class OpinionControllerTest extends TestCase
         $this->opinionController
             ->expects($this->once())
             ->method('addFlash')
-            ->with('success', 'Opinion has been added successfully.');
+            ->with('success', FlashMessages::OPINION_ADDED_SUCCESS);
 
         $this->opinionController
             ->expects($this->once())
@@ -301,12 +302,12 @@ class OpinionControllerTest extends TestCase
             ->expects($this->once())
             ->method('getOpinionForEdit')
             ->with($this->equalTo($opinionId), $this->identicalTo($user))
-            ->willThrowException(new NotFoundHttpException('Opinion not found.'));
+            ->willThrowException(new NotFoundHttpException(FlashMessages::OPINION_NOT_FOUND));
 
         $this->opinionController
             ->expects($this->once())
             ->method('addFlash')
-            ->with('error', 'Opinion not found.');
+            ->with('error', FlashMessages::OPINION_NOT_FOUND);
 
         $this->opinionController
             ->expects($this->once())
@@ -334,12 +335,12 @@ class OpinionControllerTest extends TestCase
             ->expects($this->once())
             ->method('getOpinionForEdit')
             ->with($this->equalTo($opinionId), $this->identicalTo($user))
-            ->willThrowException(new AccessDeniedException('You are not allowed to edit this opinion.'));
+            ->willThrowException(new AccessDeniedException(FlashMessages::OPINION_NOT_ALLOWED_EDIT));
 
         $this->opinionController
             ->expects($this->once())
             ->method('addFlash')
-            ->with('error', 'You are not allowed to edit this opinion.');
+            ->with('error', FlashMessages::OPINION_NOT_ALLOWED_EDIT);
 
         $this->opinionController
             ->expects($this->once())
@@ -451,7 +452,7 @@ class OpinionControllerTest extends TestCase
         $this->opinionController
             ->expects($this->once())
             ->method('addFlash')
-            ->with('success', 'Opinion has been updated successfully.');
+            ->with('success', FlashMessages::OPINION_UPDATED_SUCCESS);
 
         $this->opinionController
             ->expects($this->once())
@@ -492,7 +493,7 @@ class OpinionControllerTest extends TestCase
         $this->assertEquals(200, $response->getStatusCode());
         $responseData = json_decode($response->getContent(), true);
         $this->assertArrayHasKey('success', $responseData);
-        $this->assertEquals('Opinion has been deleted successfully.', $responseData['success']);
+        $this->assertEquals(FlashMessages::OPINION_DELETED_SUCCESS, $responseData['success']);
     }
 
     public function testDeleteWithNotFoundException()
@@ -511,7 +512,7 @@ class OpinionControllerTest extends TestCase
         $this->opinionService
             ->expects($this->once())
             ->method('deleteOpinion')
-            ->willThrowException(new NotFoundHttpException('Opinion not found.'));
+            ->willThrowException(new NotFoundHttpException(FlashMessages::OPINION_NOT_FOUND));
 
         $response = $this->opinionController->delete($request, $opinionId);
 
@@ -519,7 +520,7 @@ class OpinionControllerTest extends TestCase
         $this->assertEquals(404, $response->getStatusCode());
         $responseData = json_decode($response->getContent(), true);
         $this->assertArrayHasKey('error', $responseData);
-        $this->assertEquals('Opinion not found.', $responseData['error']);
+        $this->assertEquals(FlashMessages::OPINION_NOT_FOUND, $responseData['error']);
     }
 
     public function testDeleteWithBadRequestException()
@@ -538,7 +539,7 @@ class OpinionControllerTest extends TestCase
         $this->opinionService
             ->expects($this->once())
             ->method('deleteOpinion')
-            ->willThrowException(new BadRequestHttpException('Invalid CSRF token.'));
+            ->willThrowException(new BadRequestHttpException(FlashMessages::INVALID_CSRF_TOKEN));
 
         $response = $this->opinionController->delete($request, $opinionId);
 
@@ -546,7 +547,7 @@ class OpinionControllerTest extends TestCase
         $this->assertEquals(400, $response->getStatusCode());
         $responseData = json_decode($response->getContent(), true);
         $this->assertArrayHasKey('error', $responseData);
-        $this->assertEquals('Invalid CSRF token.', $responseData['error']);
+        $this->assertEquals(FlashMessages::INVALID_CSRF_TOKEN, $responseData['error']);
     }
 
     public function testDeleteWithAccessDeniedException()
@@ -565,7 +566,7 @@ class OpinionControllerTest extends TestCase
         $this->opinionService
             ->expects($this->once())
             ->method('deleteOpinion')
-            ->willThrowException(new AccessDeniedException('You are not allowed to delete this opinion.'));
+            ->willThrowException(new AccessDeniedException(FlashMessages::OPINION_NOT_ALLOWED_DELETE));
 
         $response = $this->opinionController->delete($request, $opinionId);
 
@@ -573,7 +574,7 @@ class OpinionControllerTest extends TestCase
         $this->assertEquals(500, $response->getStatusCode());
         $responseData = json_decode($response->getContent(), true);
         $this->assertArrayHasKey('error', $responseData);
-        $this->assertEquals('You are not allowed to delete this opinion.', $responseData['error']);
+        $this->assertEquals(FlashMessages::OPINION_NOT_ALLOWED_DELETE, $responseData['error']);
     }
 
     public function testDeleteWithGenericException()
@@ -592,7 +593,7 @@ class OpinionControllerTest extends TestCase
         $this->opinionService
             ->expects($this->once())
             ->method('deleteOpinion')
-            ->willThrowException(new \Exception('An error occurred.'));
+            ->willThrowException(new \Exception('Wystąpił błąd.'));
 
         $response = $this->opinionController->delete($request, $opinionId);
 
@@ -600,6 +601,6 @@ class OpinionControllerTest extends TestCase
         $this->assertEquals(500, $response->getStatusCode());
         $responseData = json_decode($response->getContent(), true);
         $this->assertArrayHasKey('error', $responseData);
-        $this->assertEquals('An error occurred.', $responseData['error']);
+        $this->assertEquals('Wystąpił błąd.', $responseData['error']);
     }
 }

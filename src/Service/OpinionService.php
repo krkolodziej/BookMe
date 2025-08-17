@@ -41,7 +41,7 @@ class OpinionService
         $service = $this->serviceRepository->findOneBy(['encodedName' => $encodedName]);
 
         if (!$service) {
-            throw new NotFoundHttpException('Service not found');
+            throw new NotFoundHttpException('Serwis nie został znaleziony');
         }
 
         $result = $this->opinionRepository->getServiceOpinions(
@@ -71,7 +71,7 @@ class OpinionService
         $booking = $this->bookingRepository->find($bookingId);
 
         if (!$booking) {
-            throw new NotFoundHttpException('Nie znaleziono rezerwacji.');
+            throw new NotFoundHttpException('Rezerwacja nie została znaleziona.');
         }
 
         $now = new \DateTime();
@@ -127,7 +127,7 @@ class OpinionService
         $opinion = $this->opinionRepository->find($opinionId);
 
         if (!$opinion) {
-            throw new NotFoundHttpException('Nie znaleziono opinii.');
+            throw new NotFoundHttpException('Opinia nie została znaleziona.');
         }
 
         $booking = $opinion->getBooking();
@@ -152,7 +152,7 @@ class OpinionService
         $opinion = $this->opinionRepository->find($opinionId);
 
         if (!$opinion) {
-            throw new NotFoundHttpException('Nie znaleziono opinii.');
+            throw new NotFoundHttpException('Opinia nie została znaleziona.');
         }
 
         if (!$this->csrfTokenManager->isTokenValid(new CsrfToken('delete-opinion-' . $opinionId, $csrfToken))) {

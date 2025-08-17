@@ -2,6 +2,7 @@
 
 namespace App\Tests\Controller;
 
+use App\Constant\FlashMessages;
 use App\Controller\BookingController;
 use App\Entity\Booking;
 use App\Entity\Employee;
@@ -170,7 +171,7 @@ class BookingControllerTest extends TestCase
         $this->bookingController
             ->expects($this->once())
             ->method('addFlash')
-            ->with('danger', 'You must be logged in to book a visit.');
+            ->with('danger', FlashMessages::VISIT_LOGIN_REQUIRED);
 
         $this->bookingController
             ->expects($this->once())
@@ -317,7 +318,7 @@ class BookingControllerTest extends TestCase
         $this->bookingController
             ->expects($this->once())
             ->method('addFlash')
-            ->with('success', 'The visit has been successfully booked.');
+            ->with('success', FlashMessages::VISIT_BOOKED_SUCCESS);
 
         $this->bookingController
             ->expects($this->once())
@@ -336,7 +337,7 @@ class BookingControllerTest extends TestCase
         $offerEncodedName = 'relaxing-massage-60min';
         $request = $this->createMock(Request::class);
         $user = $this->createMock(User::class);
-        $exceptionMessage = 'Service not found.';
+        $exceptionMessage = FlashMessages::SERVICE_NOT_FOUND_EN;
         $exception = new \Exception($exceptionMessage, 404);
 
         $this->security
@@ -418,7 +419,7 @@ class BookingControllerTest extends TestCase
         $offerEncodedName = 'relaxing-massage-60min';
         
         $expectedResponse = [
-            'error' => 'Missing query parameters (employee, date).'
+            'error' => FlashMessages::MISSING_PARAMETERS_EMPLOYEE_DATE_EN
         ];
 
         $request = $this->createMock(Request::class);
@@ -428,7 +429,7 @@ class BookingControllerTest extends TestCase
             ->expects($this->once())
             ->method('json')
             ->with(
-                $this->equalTo(['error' => 'Missing query parameters (employee, date).']),
+                $this->equalTo(['error' => FlashMessages::MISSING_PARAMETERS_EMPLOYEE_DATE]),
                 $this->equalTo(Response::HTTP_BAD_REQUEST)
             )
             ->willReturn(new JsonResponse($expectedResponse, Response::HTTP_BAD_REQUEST));
@@ -444,7 +445,7 @@ class BookingControllerTest extends TestCase
         $offerEncodedName = 'relaxing-massage-60min';
         $employeeId = '1';
         $date = '2023-06-01';
-        $errorMessage = 'Employee not found.';
+        $errorMessage = FlashMessages::EMPLOYEE_NOT_FOUND_EN;
         
         $expectedResponse = [
             'error' => $errorMessage
@@ -489,7 +490,7 @@ class BookingControllerTest extends TestCase
         $this->bookingController
             ->expects($this->once())
             ->method('addFlash')
-            ->with('danger', 'You must be logged in to edit a visit.');
+            ->with('danger', FlashMessages::VISIT_EDIT_LOGIN_REQUIRED);
 
         $this->bookingController
             ->expects($this->once())
@@ -633,7 +634,7 @@ class BookingControllerTest extends TestCase
         $this->bookingController
             ->expects($this->once())
             ->method('addFlash')
-            ->with('success', 'The visit has been successfully updated.');
+            ->with('success', FlashMessages::VISIT_UPDATED_SUCCESS);
 
         $this->bookingController
             ->expects($this->once())
@@ -651,7 +652,7 @@ class BookingControllerTest extends TestCase
         $bookingId = 1;
         $request = $this->createMock(Request::class);
         $user = $this->createMock(User::class);
-        $errorMessage = 'Visit not found.';
+        $errorMessage = FlashMessages::VISIT_NOT_FOUND_EN;
 
         $this->security
             ->expects($this->once())

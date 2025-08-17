@@ -46,7 +46,6 @@ class UserType extends AbstractType
                 'choices' => [
                     'Mężczyzna' => 'male',
                     'Kobieta' => 'female',
-                    'Inne' => 'other'
                 ],
                 'attr' => [
                     'class' => 'form-select'

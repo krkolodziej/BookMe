@@ -31,7 +31,7 @@ class AdminBookingService
         $service = $this->serviceRepository->findOneBy(['encodedName' => $encodedName]);
 
         if (!$service) {
-            throw new NotFoundHttpException('Service not found.');
+            throw new NotFoundHttpException('Serwis nie został znaleziony.');
         }
 
         return $service;
@@ -95,11 +95,11 @@ class AdminBookingService
         $booking = $this->bookingRepository->find($id);
 
         if (!$booking) {
-            throw new NotFoundHttpException('Visit not found.');
+            throw new NotFoundHttpException('Wizyta nie została znaleziona.');
         }
 
         if ($booking->getService()->getId() !== $service->getId()) {
-            throw new NotFoundHttpException('The visit does not belong to this service.');
+            throw new NotFoundHttpException('Ta wizyta nie należy do tego serwisu.');
         }
 
         return $booking;
@@ -133,7 +133,7 @@ class AdminBookingService
         $offer = $service->getOffers()->filter(fn ($o) => $o->getId() == $offerId)->first();
 
         if (!$employee || !$offer) {
-            throw new BadRequestHttpException('Employee or offer not found.');
+            throw new BadRequestHttpException('Pracownik lub oferta nie została znaleziona.');
         }
 
         $dateObj = new \DateTime($date);

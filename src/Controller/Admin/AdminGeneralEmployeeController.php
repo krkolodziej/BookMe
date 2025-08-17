@@ -2,6 +2,7 @@
 
 namespace App\Controller\Admin;
 
+use App\Constant\FlashMessages;
 use App\Entity\Employee;
 use App\Entity\User;
 use App\Form\AdminGeneralEmployeeType;
@@ -88,7 +89,7 @@ class AdminGeneralEmployeeController extends AbstractController
                 'form' => $form->createView()
             ]);
         } catch (\Exception $e) {
-            $this->addFlash('error', 'Wystąpił błąd: ' . $e->getMessage());
+            $this->addFlash('error', FlashMessages::ERROR_OCCURRED . $e->getMessage());
             return $this->redirectToRoute('admin_general_employee_index');
         }
     }
@@ -127,7 +128,7 @@ class AdminGeneralEmployeeController extends AbstractController
         } catch (NotFoundHttpException $e) {
             throw $this->createNotFoundException($e->getMessage());
         } catch (\Exception $e) {
-            $this->addFlash('error', 'Wystąpił błąd: ' . $e->getMessage());
+            $this->addFlash('error', FlashMessages::ERROR_OCCURRED . $e->getMessage());
             return $this->redirectToRoute('admin_general_employee_index');
         }
     }
@@ -145,7 +146,7 @@ class AdminGeneralEmployeeController extends AbstractController
         } catch (AccessDeniedException $e) {
             throw $this->createAccessDeniedException($e->getMessage());
         } catch (\Exception $e) {
-            $this->addFlash('error', 'Wystąpił błąd: ' . $e->getMessage());
+            $this->addFlash('error', FlashMessages::ERROR_OCCURRED . $e->getMessage());
         }
 
         return $this->redirectToRoute('admin_general_employee_index');

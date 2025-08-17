@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Constant\FlashMessages;
 use App\Entity\Booking;
 use App\Form\BookingType;
 use App\Repository\BookingRepository;
@@ -86,7 +87,7 @@ class BookingController extends AbstractController
         $user = $this->security->getUser();
         
         if (!$user) {
-            $this->addFlash('danger', 'You must be logged in to book a visit.');
+            $this->addFlash('danger', FlashMessages::VISIT_LOGIN_REQUIRED);
             return $this->redirectToRoute('app_login');
         }
         
@@ -108,7 +109,7 @@ class BookingController extends AbstractController
             $form->handleRequest($request);
             if ($form->isSubmitted() && $form->isValid()) {
                 $this->bookingService->saveBooking($booking);
-                $this->addFlash('success', 'The visit has been successfully booked.');
+                $this->addFlash('success', FlashMessages::VISIT_BOOKED_SUCCESS);
                 return $this->redirectToRoute('booking_index');
             }
             
@@ -133,7 +134,7 @@ class BookingController extends AbstractController
             
             if (!$employeeId || !$date) {
                 return $this->json([
-                    'error' => 'Missing query parameters (employee, date).'
+                    'error' => FlashMessages::MISSING_PARAMETERS_EMPLOYEE_DATE
                 ], Response::HTTP_BAD_REQUEST);
             }
             
@@ -161,7 +162,7 @@ class BookingController extends AbstractController
         $user = $this->security->getUser();
         
         if (!$user) {
-            $this->addFlash('danger', 'You must be logged in to edit a visit.');
+            $this->addFlash('danger', FlashMessages::VISIT_EDIT_LOGIN_REQUIRED);
             return $this->redirectToRoute('app_login');
         }
         
@@ -182,7 +183,7 @@ class BookingController extends AbstractController
             
             if ($form->isSubmitted() && $form->isValid()) {
                 $this->bookingService->saveBooking($booking);
-                $this->addFlash('success', 'The visit has been successfully updated.');
+                $this->addFlash('success', FlashMessages::VISIT_UPDATED_SUCCESS);
                 return $this->redirectToRoute('booking_index');
             }
             

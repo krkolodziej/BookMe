@@ -105,7 +105,6 @@ class AdminGeneralEmployeeType extends AbstractType
                 'choices' => [
                     'Mężczyzna' => 'male',
                     'Kobieta' => 'female',
-                    'Inna' => 'other'
                 ],
                 'attr' => [
                     'class' => 'form-select'

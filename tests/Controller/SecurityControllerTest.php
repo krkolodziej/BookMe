@@ -2,6 +2,7 @@
 
 namespace App\Tests\Controller;
 
+use App\Constant\FlashMessages;
 use App\Controller\SecurityController;
 use App\Entity\User;
 use App\Form\RegistrationFormType;

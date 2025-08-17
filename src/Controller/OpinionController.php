@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Constant\FlashMessages;
 use App\Entity\Booking;
 use App\Entity\Opinion;
 use App\Form\OpinionType;
@@ -36,7 +37,7 @@ class OpinionController extends AbstractController
             return new JsonResponse($result);
         } catch (\Exception $e) {
             return new JsonResponse([
-                'error' => 'Internal server error',
+                'error' => FlashMessages::INTERNAL_SERVER_ERROR,
                 'message' => $e->getMessage()
             ], $e->getCode() === 404 ? 404 : 500);
         }
@@ -54,7 +55,7 @@ class OpinionController extends AbstractController
 
             if ($form->isSubmitted() && $form->isValid()) {
                 $this->opinionService->saveOpinion($opinion);
-                $this->addFlash('success', 'Opinion has been added successfully.');
+                $this->addFlash('success', FlashMessages::OPINION_ADDED_SUCCESS);
                 return $this->redirectToRoute('booking_index');
             }
 
@@ -80,7 +81,7 @@ class OpinionController extends AbstractController
             
             if ($form->isSubmitted() && $form->isValid()) {
                 $this->opinionService->saveOpinion($opinion);
-                $this->addFlash('success', 'Opinion has been updated successfully.');
+                $this->addFlash('success', FlashMessages::OPINION_UPDATED_SUCCESS);
                 return $this->redirectToRoute('booking_index');
             }
 
@@ -102,7 +103,7 @@ class OpinionController extends AbstractController
             $submittedToken = $request->headers->get('X-CSRF-TOKEN');
             $this->opinionService->deleteOpinion($id, $this->getUser(), $submittedToken);
             
-            return new JsonResponse(['success' => 'Opinion has been deleted successfully.']);
+            return new JsonResponse(['success' => FlashMessages::OPINION_DELETED_SUCCESS]);
         } catch (\Exception $e) {
             $statusCode = match (get_class($e)) {
                 'Symfony\Component\HttpKernel\Exception\NotFoundHttpException' => 404,

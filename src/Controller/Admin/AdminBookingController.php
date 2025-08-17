@@ -2,6 +2,7 @@
 
 namespace App\Controller\Admin;
 
+use App\Constant\FlashMessages;
 use App\Entity\Booking;
 use App\Form\AdminBookingType;
 use App\Repository\BookingRepository;
@@ -63,7 +64,7 @@ class AdminBookingController extends AbstractController
             if ($form->isSubmitted() && $form->isValid()) {
                 try {
                     $this->adminBookingService->saveBooking($booking);
-                    $this->addFlash('success', 'The visit has been successfully created.');
+                    $this->addFlash('success', FlashMessages::VISIT_CREATED_SUCCESS);
                     return $this->redirectToRoute('admin_service_bookings', ['encodedName' => $encodedName]);
                 } catch (\Exception $e) {
                     $this->addFlash('danger', 'Wystąpił błąd podczas zapisywania wizyty: ' . $e->getMessage());
@@ -130,7 +131,7 @@ class AdminBookingController extends AbstractController
             $service = $this->adminBookingService->getServiceByEncodedName($encodedName);
             $this->adminBookingService->deleteBooking($id, $service);
             
-            $this->addFlash('success', 'The visit has been successfully deleted.');
+            $this->addFlash('success', FlashMessages::VISIT_DELETED_SUCCESS);
         } catch (NotFoundHttpException $e) {
             $this->addFlash('danger', $e->getMessage());
         } catch (\Exception $e) {
@@ -152,7 +153,7 @@ class AdminBookingController extends AbstractController
 
             if (!$offerId || !$employeeId || !$date) {
                 return $this->json([
-                    'error' => 'Missing query parameters (offer, employee, date).'
+                    'error' => FlashMessages::MISSING_PARAMETERS_OFFER_EMPLOYEE_DATE
                 ], Response::HTTP_BAD_REQUEST);
             }
 
@@ -178,7 +179,7 @@ class AdminBookingController extends AbstractController
             return $this->json(['error' => $e->getMessage()], Response::HTTP_BAD_REQUEST);
         } catch (\Exception $e) {
             return $this->json([
-                'error' => 'Wystąpił błąd podczas pobierania dostępnych terminów: ' . $e->getMessage()
+                'error' => FlashMessages::ERROR_FETCHING_AVAILABLE_TIMES . $e->getMessage()
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }

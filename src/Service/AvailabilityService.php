@@ -12,13 +12,13 @@ use Symfony\Bundle\SecurityBundle\Security;
 class AvailabilityService
 {
     private const DAYS_OF_WEEK_MAP = [
-        'Monday' => 'poniedziałek',
-        'Tuesday' => 'wtorek',
-        'Wednesday' => 'środa',
-        'Thursday' => 'thursday',
-        'Friday' => 'piątek',
-        'Saturday' => 'sobota',
-        'Sunday' => 'niedziela'
+        'Monday' => 'Poniedziałek',
+        'Tuesday' => 'Wtorek',
+        'Wednesday' => 'Środa',
+        'Thursday' => 'Czwartek',
+        'Friday' => 'Piątek',
+        'Saturday' => 'Sobota',
+        'Sunday' => 'Niedziela'
     ];
 
     public function __construct(
