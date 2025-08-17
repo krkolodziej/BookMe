@@ -38,7 +38,7 @@ class EmployeeFixtures extends Fixture implements DependentFixtureInterface
         }
         
         foreach ($services as $service) {
-            for ($i = 0; $i < 3; $i++) {
+            for ($i = 0; $i < 1; $i++) {
                 $gender = $faker->randomElement(['male', 'female']);
                 $firstName = $gender === 'male' ? $faker->firstNameMale : $faker->firstNameFemale;
                 $lastName = $faker->lastName;

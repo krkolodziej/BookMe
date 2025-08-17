@@ -35,7 +35,7 @@ class UserFixtures extends Fixture
 
         $manager->persist($adminUser);
 
-        for ($i = 0; $i < 50; $i++) {
+        for ($i = 0; $i < 10; $i++) {
             $gender = $faker->randomElement(['male', 'female']);
             $firstName = $gender === 'male' ? $faker->firstNameMale : $faker->firstNameFemale;
             $lastName = $faker->lastName;

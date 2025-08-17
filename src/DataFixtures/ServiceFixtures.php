@@ -31,7 +31,7 @@ class ServiceFixtures extends Fixture implements DependentFixtureInterface
             throw new \RuntimeException('Nie znaleziono żadnych kategorii. Upewnij się, że ServiceCategoryFixtures zostały wykonane pierwsze.');
         }
 
-        for ($i = 0; $i < 200; $i++) {
+        for ($i = 0; $i < 20; $i++) {
             $service = new Service();
             $this->populateService($service, $faker);
             $randomCategory = $categories[array_rand($categories)];
@@ -39,7 +39,7 @@ class ServiceFixtures extends Fixture implements DependentFixtureInterface
             $manager->persist($service);
         }
 
-        for ($i = 0; $i < 100; $i++) {
+        for ($i = 0; $i < 10; $i++) {
             $service = new Service();
             $this->populateService($service, $faker);
             $service->setServiceCategory(null); 
