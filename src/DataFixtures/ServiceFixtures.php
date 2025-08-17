@@ -12,10 +12,18 @@ use Faker\Factory;
 class ServiceFixtures extends Fixture implements DependentFixtureInterface
 {
     private array $usedNames = [];
+    private ObjectManager $manager;
 
     public function load(ObjectManager $manager): void
     {
+        $this->manager = $manager;
         $faker = Factory::create('pl_PL');
+
+        // Check if services already exist to avoid duplicates
+        $existingServices = $manager->getRepository(Service::class)->findAll();
+        if (!empty($existingServices)) {
+            return; // Skip if services already exist
+        }
 
         $categories = $manager->getRepository(ServiceCategory::class)->findAll();
 
@@ -43,11 +51,7 @@ class ServiceFixtures extends Fixture implements DependentFixtureInterface
 
     private function populateService(Service $service, \Faker\Generator $faker): void
     {
-        do {
-            $name = $this->generateUniqueName($faker);
-        } while (in_array($name, $this->usedNames));
-
-        $this->usedNames[] = $name;
+        $name = $this->generateUniqueName($faker);
         $service->setName($name);
 
         $service->setDescription($faker->sentence(30));
@@ -64,10 +68,14 @@ class ServiceFixtures extends Fixture implements DependentFixtureInterface
 
     private function generateUniqueName(\Faker\Generator $faker): string
     {
-        $suffix = $faker->word;
-        $number = count($this->usedNames) + 1;
-
-        return sprintf('%s %d', ucfirst($suffix), $number);
+        $types = ['Salon', 'Studio', 'Gabinet', 'Klinika', 'Centrum', 'Pracownia'];
+        $adjectives = ['Nowoczesny', 'Elegancki', 'Profesjonalny', 'Ekskluzywny', 'Przyjazny', 'Komfortowy'];
+        
+        $type = $faker->randomElement($types);
+        $adjective = $faker->randomElement($adjectives);
+        $uniqueId = uniqid();
+        
+        return sprintf('%s %s %s', $adjective, $type, substr($uniqueId, -6));
     }
 
     public function getDependencies(): array
