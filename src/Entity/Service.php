@@ -16,7 +16,7 @@ class Service
     #[ORM\Column]
     private int $id;
 
-    #[ORM\Column(length: 255, unique: true)]
+    #[ORM\Column(length: 255)]
     private string $name = '';
 
     #[ORM\Column(type: 'text', nullable: true)]

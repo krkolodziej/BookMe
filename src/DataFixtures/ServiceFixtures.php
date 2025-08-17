@@ -51,13 +51,7 @@ class ServiceFixtures extends Fixture implements DependentFixtureInterface
 
     private function populateService(Service $service, \Faker\Generator $faker): void
     {
-        // Generate unique name with database check
-        do {
-            $name = $this->generateUniqueName($faker);
-            $existingService = $this->manager->getRepository(Service::class)->findOneBy(['name' => $name]);
-        } while ($existingService !== null || in_array($name, $this->usedNames));
-        
-        $this->usedNames[] = $name;
+        $name = $this->generateUniqueName($faker);
         $service->setName($name);
 
         $service->setDescription($faker->sentence(30));
@@ -74,12 +68,14 @@ class ServiceFixtures extends Fixture implements DependentFixtureInterface
 
     private function generateUniqueName(\Faker\Generator $faker): string
     {
-        // Generate truly unique name using timestamp and random number
-        $timestamp = time();
-        $random = mt_rand(1000, 9999);
+        $types = ['Salon', 'Studio', 'Gabinet', 'Klinika', 'Centrum', 'Pracownia'];
+        $adjectives = ['Nowoczesny', 'Elegancki', 'Profesjonalny', 'Ekskluzywny', 'Przyjazny', 'Komfortowy'];
+        
+        $type = $faker->randomElement($types);
+        $adjective = $faker->randomElement($adjectives);
         $counter = count($this->usedNames) + 1;
         
-        return sprintf('Usługa %d_%d_%d', $counter, $timestamp, $random);
+        return sprintf('%s %s #%d', $adjective, $type, $counter);
     }
 
     public function getDependencies(): array
