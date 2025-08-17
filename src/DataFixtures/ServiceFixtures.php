@@ -51,7 +51,15 @@ class ServiceFixtures extends Fixture implements DependentFixtureInterface
 
     private function populateService(Service $service, \Faker\Generator $faker): void
     {
-        $name = $this->generateUniqueName($faker);
+        // Generate unique name with database check
+        $attempts = 0;
+        do {
+            $name = $this->generateUniqueName($faker);
+            $existingService = $this->manager->getRepository(Service::class)->findOneBy(['name' => $name]);
+            $attempts++;
+        } while (($existingService !== null || in_array($name, $this->usedNames)) && $attempts < 50);
+        
+        $this->usedNames[] = $name;
         $service->setName($name);
 
         $service->setDescription($faker->sentence(30));
@@ -68,14 +76,34 @@ class ServiceFixtures extends Fixture implements DependentFixtureInterface
 
     private function generateUniqueName(\Faker\Generator $faker): string
     {
-        $types = ['Salon', 'Studio', 'Gabinet', 'Klinika', 'Centrum', 'Pracownia'];
-        $adjectives = ['Nowoczesny', 'Elegancki', 'Profesjonalny', 'Ekskluzywny', 'Przyjazny', 'Komfortowy'];
+        $types = ['Salon', 'Studio', 'Gabinet', 'Klinika', 'Centrum', 'Pracownia', 'Zakład', 'Instytut', 'Atelier', 'Boutique'];
+        $adjectives = ['Nowoczesny', 'Elegancki', 'Profesjonalny', 'Ekskluzywny', 'Przyjazny', 'Komfortowy', 'Stylowy', 'Luksusowy', 'Prestiżowy', 'Rodzinny', 'Tradycyjny', 'Innowacyjny'];
+        $names = ['Victoria', 'Elite', 'Royal', 'Golden', 'Diamond', 'Crystal', 'Platinum', 'Premium', 'Deluxe', 'Classic', 'Modern', 'Harmony', 'Beauty', 'Perfect', 'Divine', 'Supreme'];
         
-        $type = $faker->randomElement($types);
-        $adjective = $faker->randomElement($adjectives);
-        $counter = count($this->usedNames) + 1;
+        // Różne wzory nazw
+        $patterns = [
+            '%s %s',           // Nowoczesny Salon
+            '%s %s',           // Victoria Studio  
+            '%s %s %s',        // Elegancki Salon Victoria
+            '%s "%s"',         // Salon "Victoria"
+            '%s %s & Spa',     // Elegancki Salon & Spa
+            '%s %s Plus',      // Nowoczesny Studio Plus
+        ];
         
-        return sprintf('%s %s #%d', $adjective, $type, $counter);
+        $pattern = $faker->randomElement($patterns);
+        
+        if (str_contains($pattern, '%s %s %s')) {
+            return sprintf($pattern, $faker->randomElement($adjectives), $faker->randomElement($types), $faker->randomElement($names));
+        } elseif (str_contains($pattern, '"%s"')) {
+            return sprintf($pattern, $faker->randomElement($types), $faker->randomElement($names));
+        } else {
+            // Losowo wybierz czy użyć przymiotnika czy nazwy własnej
+            if ($faker->boolean()) {
+                return sprintf($pattern, $faker->randomElement($adjectives), $faker->randomElement($types));
+            } else {
+                return sprintf($pattern, $faker->randomElement($names), $faker->randomElement($types));
+            }
+        }
     }
 
     public function getDependencies(): array
