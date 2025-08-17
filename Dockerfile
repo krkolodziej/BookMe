@@ -29,7 +29,7 @@ WORKDIR /var/www/html
 # Copy application files
 COPY . .
 
-# Install PHP dependencies (including dev for fixtures)
+# Install PHP dependencies with dev packages for fixtures functionality
 RUN COMPOSER_ALLOW_SUPERUSER=1 composer install --optimize-autoloader --no-interaction
 
 # Install Node.js dependencies and build assets
