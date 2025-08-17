@@ -15,7 +15,6 @@ use Faker\Factory;
 class BookingFixtures extends Fixture implements DependentFixtureInterface
 {
     private $faker;
-    private $batchCounter = 0;
 
     public function __construct()
     {
@@ -99,12 +98,6 @@ class BookingFixtures extends Fixture implements DependentFixtureInterface
                                 ->setIsRead(false);
 
                             $manager->persist($notification);
-                        }
-                        
-                        // Flush every 10 items to manage memory
-                        if (++$this->batchCounter % 10 === 0) {
-                            $manager->flush();
-                            $manager->clear();
                         }
                     } catch (\Exception $e) {
                         echo sprintf(
