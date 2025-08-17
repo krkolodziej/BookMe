@@ -29,7 +29,7 @@ WORKDIR /var/www/html
 # Copy application files
 COPY . .
 
-# Install PHP dependencies (with dev first for cache:clear)
+# Install PHP dependencies (including dev for fixtures)
 RUN COMPOSER_ALLOW_SUPERUSER=1 composer install --optimize-autoloader --no-interaction
 
 # Install Node.js dependencies and build assets
@@ -39,9 +39,6 @@ RUN npm install && npm run build
 RUN mkdir -p var/cache var/log && \
     chown -R www-data:www-data var && \
     chmod -R 775 var
-
-# Now remove dev dependencies first
-RUN COMPOSER_ALLOW_SUPERUSER=1 composer install --no-dev --optimize-autoloader --no-interaction
 
 # Remove any existing cache and ensure clean cache directory
 RUN rm -rf var/cache/* && \
